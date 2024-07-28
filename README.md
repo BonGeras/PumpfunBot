@@ -18,3 +18,5 @@
   > mint address
   >
   > pump fun  mint address
+
+* ```subscribe_tokens.py``` является основным классом. ```check.py``` используется как тестовый вариант с добавленным API для проверки токена
