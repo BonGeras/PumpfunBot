@@ -5,7 +5,66 @@ Hgjch5GsXh2X3CGyhSPj78qhqNAjd8xRuUQYsRvRrwiN
 Copy Wallet Private Key
 2bVR1148K5TJUF2GWFBJ8CPmFgzx8gEoLfxpuMW3V2bcqtgWYq3xd7RV5R2f253mVasgiCYpL53LnZHj3sWjURG2
 
+Wallet address
+Hgjch5GsXh2X3CGyhSPj78qhqNAjd8xRuUQYsRvRrwiN
 
 Copy API Key
 60uprxa26h5kee3f61x2yp1jd5d6pxa98nbqemk8axt6yp9pchv50tuba9r4atv7d9hmujur69m5amv26rt52k35c9n4ctvm85x3gx2jf517gjvncmtq8jvm5ct6umut99a6rpb6cwyku8dwpwra59rt6cy9b6dn5acuadr9mt6cdjc9t77gc3fb9rkcn1h85w5cjk86hvkuf8
 
+
+$DNUGS
+DINO NUGS
+4MWnN6uGbJe7FNpcxs16GBvFWHDoiEL1VJC5hzdTpump
+https://pump.fun/4MWnN6uGbJe7FNpcxs16GBvFWHDoiEL1VJC5hzdTpump
+
+$sunshine
+sunshine
+Ff6Nuf4vvG8nzgZ8A4gibgTMWQkHx7XtGRSBS398pump
+https://pump.fun/Ff6Nuf4vvG8nzgZ8A4gibgTMWQkHx7XtGRSBS398pump
+
+$miguel
+barber of pumpfun
+GbWhTp3AaFzGPiu39mf2Q5jMRgpp2VMcKyZCGrghpump
+https://pump.fun/GbWhTp3AaFzGPiu39mf2Q5jMRgpp2VMcKyZCGrghpump
+
+$VVBS
+The Boys Clubhouse
+BYZfVjzFKNvLrmAJ12ENxrKiGgxLRjbS8hbi1aPfpump
+https://pump.fun/BYZfVjzFKNvLrmAJ12ENxrKiGgxLRjbS8hbi1aPfpump
+
+$selly 
+selly the seal
+E8CszyKiiZW7kEneEx984tBuoBMKA8v3tQPyF8Wipump
+https://pump.fun/E8CszyKiiZW7kEneEx984tBuoBMKA8v3tQPyF8Wipump
+
+$DUZZ
+DUZZ
+BsvD7KE5GG5vznM3dowK8eFuKoNPra8McRBJmf1jwC1N
+https://pump.fun/BsvD7KE5GG5vznM3dowK8eFuKoNPra8McRBJmf1jwC1N
+
+$FLY
+Fly
+A5bYPH7cUS4zt1yCCE66ugufajVuUy47g5Zx7K3spump
+https://pump.fun/A5bYPH7cUS4zt1yCCE66ugufajVuUy47g5Zx7K3spump
+
+$STONKS
+STONKS
+8sCR3iZFETR1wMi2N6sE773CbABDetG3R9DwWbUVpump
+https://pump.fun/8sCR3iZFETR1wMi2N6sE773CbABDetG3R9DwWbUVpump
+
+$Ctrl+C
+Ctrl+C
+2wkbRC3jceWRmoRiSetcwNBN1bxXNFuigGwLkwfKpump
+https://pump.fun/2wkbRC3jceWRmoRiSetcwNBN1bxXNFuigGwLkwfKpump
+
+$FLIP
+Flip Cat
+HhCoaifPbT86QK5oohWUMt1DTd2Y6zGe3j6t9Pnepump
+https://pump.fun/HhCoaifPbT86QK5oohWUMt1DTd2Y6zGe3j6t9Pnepump
+
+
+{
+  "apiKey":"d134rk9k61n62rjrdtd70ghpb17mpcjkcx22yt31b9a4mvv56hvq0gjpa9jm4pbk8tb72xub5d0pmpa6d5344huc8d86gw2385b2pxvcecu4ahac9ntn6mb599870xtk5x85jykaewykue0upgwj984w46hjf75866wjhec71a5jw3t6hmjyna8dgtk0nv3cxr3etja9d0kuf8",
+  "walletPublicKey":"9KhxNoVt6Q7hUHqdLeXEfS7KnifS5zdaxxaSuXctEGjr",
+  "privateKey":"YWndVBdWJGBAQbRXPJNJg3Pmn7EiNCabeHbD9bzVyse4vzu6ukH7fkmx3HTvDUaR2T7gLLaJaqJu2UftyS8TAC8"
+}
