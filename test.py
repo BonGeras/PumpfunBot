@@ -10,6 +10,7 @@ def gen_log_filename():
     return f"TestRunDevJeeted-{dt}.log"
 
 async def handle_token_creation(websocket, balance):
+    filename = gen_log_filename()
     while True:
         try:
             # Получаем данные о новом токене
@@ -62,7 +63,6 @@ async def handle_token_creation(websocket, balance):
                 print(f"Прибыль: {Profit_percent}% ({profit_in_sol} SOL). Текущий баланс: {balance} SOL")
 
                 # Запись данных в файл
-                filename = gen_log_filename()
                 with open(filename, "a") as file:
                     file.write(
                         f"{mint}\n{name}\n{Start}\n{End}\n{Profit}\n{Profit_percent}%\nБаланс: {balance} SOL\n===========\n")
