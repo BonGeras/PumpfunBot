@@ -3,6 +3,11 @@ import websockets
 import json
 import time
 
+from datetime import datetime
+
+def gen_log_filename():
+    dt = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+    return f"TestRunDevJeeted-{dt}.log"
 
 async def handle_token_creation(websocket, balance):
     while True:
@@ -57,7 +62,8 @@ async def handle_token_creation(websocket, balance):
                 print(f"Прибыль: {Profit_percent}% ({profit_in_sol} SOL). Текущий баланс: {balance} SOL")
 
                 # Запись данных в файл
-                with open("TestRunDevJeeted.txt", "a") as file:
+                filename = gen_log_filename()
+                with open(filename, "a") as file:
                     file.write(
                         f"{mint}\n{name}\n{Start}\n{End}\n{Profit}\n{Profit_percent}%\nБаланс: {balance} SOL\n===========\n")
 
@@ -92,5 +98,6 @@ async def subscribe_to_new_tokens():
         await handle_token_creation(websocket, balance)
 
 
-# Запуск функции подписки на новые токены
-asyncio.run(subscribe_to_new_tokens())
+if __name__ == "__main__":
+    # Запуск функции подписки на новые токены
+    asyncio.run(subscribe_to_new_tokens())
