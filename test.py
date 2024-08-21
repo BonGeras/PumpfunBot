@@ -10,7 +10,13 @@ async def handle_token_creation(websocket, balance1, balance2, balance3, balance
             # Получаем данные о новом токене
             actual_message = await websocket.recv()
             actual_data = json.loads(actual_message)
-            print(f"Данные о создании токена: {actual_data}")
+            received_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            print(f"[{received_time}] Данные о создании токена: {actual_data}")
+
+            # Проверка на наличие всех нужных полей
+            if not all(key in actual_data for key in ("mint", "marketCapSol", "traderPublicKey", "name")):
+                print(f"[{received_time}] Сообщение пропущено: отсутствуют необходимые данные.")
+                continue
 
             # Извлечение необходимых данных
             mint = actual_data.get('mint')
@@ -19,7 +25,7 @@ async def handle_token_creation(websocket, balance1, balance2, balance3, balance
             traderPublicKey = actual_data.get('traderPublicKey')
             End1 = End2 = End3 = End4 = End5 = Start  # Изначально End равно Start
 
-            time1 = time2 = time3 = time4 = time5 = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            time1 = time2 = time3 = time4 = time5 = None
 
             if mint:
                 # Уменьшение балансов на 0.21 SOL (0.2 SOL инвестиции + 0.01 SOL комиссия) для всех стратегий
@@ -29,7 +35,7 @@ async def handle_token_creation(websocket, balance1, balance2, balance3, balance
                 balance3 -= (investment + 0.01)
                 balance4 -= (investment + 0.01)
                 balance5 -= (investment + 0.01)
-                print(f"Инвестировано 0.2 SOL в {name}. Балансы стратегий: {balance1}, {balance2}, {balance3}, {balance4}, {balance5} SOL")
+                print(f"[{received_time}] Инвестировано 0.2 SOL в {name}. Балансы стратегий: {balance1}, {balance2}, {balance3}, {balance4}, {balance5} SOL")
 
                 # Подписка на трейды по полученному токену
                 payload = {
@@ -37,11 +43,12 @@ async def handle_token_creation(websocket, balance1, balance2, balance3, balance
                     "keys": [mint]  # подписываемся на трейды по токену
                 }
                 await websocket.send(json.dumps(payload))
-                print(f"Подписка на трейды по токену: {mint}")
+                print(f"[{received_time}] Сообщение: {mint}")
 
                 # Переменные для стратегий
                 consecutive_sell_count = 0
                 total_sell_count = 0
+                strategy1_done = False
                 strategy2_done = False
                 strategy3_done = False
                 strategy4_done = False
@@ -53,51 +60,61 @@ async def handle_token_creation(websocket, balance1, balance2, balance3, balance
                     try:
                         trade_message = await asyncio.wait_for(websocket.recv(), timeout=10)
                         trade_data = json.loads(trade_message)
-                        print(f"Трейд по токену: {trade_data}")
+                        trade_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                        print(f"[{trade_time}] Трейд по токену: {trade_data}")
+
+                        # Проверка типа транзакции и других необходимых данных
+                        if 'txType' not in trade_data or 'marketCapSol' not in trade_data:
+                            print(f"[{trade_time}] Некорректное сообщение: {trade_data}")
+                            continue
+
+                        tx_type = trade_data.get('txType')
 
                         # Обновление End1 для первой стратегии
-                        End1 = trade_data.get('marketCapSol', End1)
-                        time1 = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                        if not strategy1_done:
+                            End1 = trade_data.get('marketCapSol', End1)
+                            time1 = trade_time
+                            strategy1_done = True  # Стратегия 1 завершена
 
                         # Обработка для стратегии 2, если она ещё не завершена
-                        if not strategy2_done and 'traderPublicKey' in trade_data:
-                            if trade_data['traderPublicKey'] == traderPublicKey:
-                                End2 = trade_data.get('marketCapSol', End2)
-                                time2 = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                                strategy2_done = True
+                        if not strategy2_done and trade_data.get('traderPublicKey') == traderPublicKey:
+                            End2 = trade_data.get('marketCapSol', End2)
+                            time2 = trade_time
+                            strategy2_done = True
 
                         # Обработка для стратегии 3, если она ещё не завершена
                         if not strategy3_done:
-                            if trade_data.get('txType') == 'sell':
+                            if tx_type == 'sell':
                                 consecutive_sell_count += 1
                                 if consecutive_sell_count >= 2:
                                     End3 = trade_data.get('marketCapSol', End3)
-                                    time3 = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                                    time3 = trade_time
                                     strategy3_done = True
                             else:
                                 consecutive_sell_count = 0
 
                         # Обработка для стратегии 4, если она ещё не завершена
                         if not strategy4_done:
-                            if trade_data.get('txType') == 'sell':
+                            if tx_type == 'sell':
                                 End4 = trade_data.get('marketCapSol', End4)
-                                time4 = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                                time4 = trade_time
                                 strategy4_done = True
 
                         # Обработка для стратегии 5, если она ещё не завершена
                         if not strategy5_done:
-                            if trade_data.get('txType') == 'sell':
+                            if tx_type == 'sell':
                                 total_sell_count += 1
                                 if total_sell_count >= 2:
                                     End5 = trade_data.get('marketCapSol', End5)
-                                    time5 = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                                    time5 = trade_time
                                     strategy5_done = True
 
                         # Если все стратегии завершены, прекращаем обновления
-                        if strategy2_done and strategy3_done and strategy4_done and strategy5_done:
+                        if strategy1_done and strategy2_done and strategy3_done and strategy4_done and strategy5_done:
                             break
 
                     except asyncio.TimeoutError:
+                        print("[Ошибка] Истекло время ожидания трейда.")
                         break
 
                 # Вычисление Profit и Profit_percent для всех стратегий
@@ -127,7 +144,7 @@ async def handle_token_creation(websocket, balance1, balance2, balance3, balance
                 balance5 += (profit_in_sol5 - 0.01)
 
                 # Запись данных в файл
-                with open("TestRunStatistics30_aug19Day.txt", "a") as file:
+                with open("TestStatistics.txt", "a") as file:
                     file.write(f"{mint}\n")
 
                     file.write(
@@ -151,7 +168,7 @@ async def handle_token_creation(websocket, balance1, balance2, balance3, balance
                     "keys": [mint]
                 }
                 await websocket.send(json.dumps(payload))
-                print(f"Отписка от трейдов по токену: {mint}")
+                print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Отписка от трейдов по токену: {mint}")
 
         except websockets.ConnectionClosed:
             print("Соединение закрыто")
