@@ -1,10 +1,19 @@
 import asyncio
+import os
 import websockets
 import json
 import time
 import aiohttp
 from datetime import datetime
 
+def gen_log_filename():
+    dt = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+    # Получаем текущую рабочую директорию скрипта
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    directory = os.path.join(base_dir, "30Seconds")
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    return os.path.join(directory, f"TestStatistics-{dt}.log")
 
 async def fetch_token_metadata(uri):
     async with aiohttp.ClientSession() as session:
@@ -16,6 +25,7 @@ async def fetch_token_metadata(uri):
 
 
 async def handle_token_creation(websocket, balance1, balance2, balance3, balance4, balance5):
+    filename = gen_log_filename()
     while True:
         try:
             # Получаем данные о новом токене
@@ -44,8 +54,8 @@ async def handle_token_creation(websocket, balance1, balance2, balance3, balance
                     telegram = metadata.get('telegram', None)
                     website = metadata.get('website', None)
 
-                    twitter_status = "✅" if twitter else "❌"
-                    telegram_status = "✅" if telegram else "❌"
+                    twitter_status = f"✅ - {twitter}" if twitter else "❌"
+                    telegram_status = f"✅ - {telegram}" if telegram else "❌"
                     website_status = f"✅ - {website}" if website else "❌"
                 else:
                     twitter_status = telegram_status = website_status = "❌"
@@ -182,7 +192,7 @@ async def handle_token_creation(websocket, balance1, balance2, balance3, balance
                 balance5 += (profit_in_sol5 - 0.01)
 
                 # Запись данных в файл
-                with open("TestStatistics.txt", "a") as file:
+                with open(filename, "a") as file:
                     file.write(f"{mint}\n")
                     file.write(f"Транзакции токена:\n")
                     for entry in transaction_log:
@@ -240,5 +250,6 @@ async def subscribe_to_new_tokens():
         # Обработка каждого нового токена
         await handle_token_creation(websocket, balance1, balance2, balance3, balance4, balance5)
 
-# Запуск функции подписки на новые токены
-asyncio.run(subscribe_to_new_tokens())
+if __name__ == "__main__":
+    # Запуск функции подписки на новые токены
+    asyncio.run(subscribe_to_new_tokens())
