@@ -2,7 +2,18 @@ import asyncio
 import websockets
 import json
 import time
+import aiohttp
 from datetime import datetime
+
+
+async def fetch_token_metadata(uri):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(uri) as response:
+            if response.status == 200:
+                return await response.json()
+            else:
+                return None
+
 
 async def handle_token_creation(websocket, balance1, balance2, balance3, balance4, balance5):
     while True:
@@ -18,11 +29,26 @@ async def handle_token_creation(websocket, balance1, balance2, balance3, balance
             # Извлечение необходимых данных
             mint = actual_data.get('mint')
             name = actual_data.get('name')
+            token_uri = actual_data.get('uri')
             Start = actual_data.get('marketCapSol')
             traderPublicKey = actual_data.get('traderPublicKey')
             End1 = End2 = End3 = End4 = End5 = Start  # Изначально End равно Start
 
             time1 = time2 = time3 = time4 = time5 = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+            # Загружаем и обрабатываем метаданные токена
+            if token_uri:
+                metadata = await fetch_token_metadata(token_uri)
+                if metadata:
+                    twitter = metadata.get('twitter', None)
+                    telegram = metadata.get('telegram', None)
+                    website = metadata.get('website', None)
+
+                    twitter_status = "✅" if twitter else "❌"
+                    telegram_status = "✅" if telegram else "❌"
+                    website_status = f"✅ - {website}" if website else "❌"
+                else:
+                    twitter_status = telegram_status = website_status = "❌"
 
             if mint:
                 # Уменьшение балансов на 0.21 SOL (0.2 SOL инвестиции + 0.01 SOL комиссия) для всех стратегий
@@ -161,6 +187,11 @@ async def handle_token_creation(websocket, balance1, balance2, balance3, balance
                     file.write(f"Транзакции токена:\n")
                     for entry in transaction_log:
                         file.write(f"{entry}\n")
+
+                    file.write(f"\nSocial Media Presence:\n")
+                    file.write(
+                        f"Twitter - {twitter_status} | Telegram - {telegram_status} | Website - {website_status}\n")
+
                     file.write(
                         f"\nMC токена при выходе по первой стратегии: {End1}\nPNL по первой стратегии: {Profit1}\n{Profit_percent1}%\nБаланс: {balance1} SOL\nВремя завершения стратегии: {time1}\n\n")
 
