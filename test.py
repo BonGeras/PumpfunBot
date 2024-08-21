@@ -49,6 +49,7 @@ async def handle_token_creation(websocket, balance1, balance2, balance3, balance
                 strategy3_done = False
                 strategy4_done = False
                 strategy5_done = False
+                transaction_log = []  # Лог для всех транзакций
 
                 # Сбор данных в течение 30 секунд для всех стратегий
                 end_time = time.time() + 30
@@ -65,15 +66,26 @@ async def handle_token_creation(websocket, balance1, balance2, balance3, balance
                             subscription_confirmed = True
                             continue
 
+                        # Игнорирование сообщений о создании новых токенов
+                        if trade_data.get('txType') == 'create':
+                            continue
+
+                        # Запись информации о транзакции
+                        transaction_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                        tx_type = trade_data.get('txType')
+                        market_cap = trade_data.get('marketCapSol', 'N/A')
+                        is_dev = 'Dev' if trade_data.get('traderPublicKey') == traderPublicKey else 'Non-dev'
+                        transaction_log.append(f"[{transaction_time}] - {is_dev} - {tx_type} - {market_cap}")
+
                         # Обновление End1 для первой стратегии
                         End1 = trade_data.get('marketCapSol', End1)
-                        time1 = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                        time1 = transaction_time
 
                         # Обработка для стратегии 2, если она ещё не завершена и подписка подтверждена
                         if subscription_confirmed and not strategy2_done and 'traderPublicKey' in trade_data:
                             if trade_data['traderPublicKey'] == traderPublicKey:
                                 End2 = trade_data.get('marketCapSol', End2)
-                                time2 = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                                time2 = transaction_time
                                 strategy2_done = True
 
                         # Обработка для стратегии 3, если она ещё не завершена и подписка подтверждена
@@ -82,7 +94,7 @@ async def handle_token_creation(websocket, balance1, balance2, balance3, balance
                                 consecutive_sell_count += 1
                                 if consecutive_sell_count >= 2:
                                     End3 = trade_data.get('marketCapSol', End3)
-                                    time3 = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                                    time3 = transaction_time
                                     strategy3_done = True
                             else:
                                 consecutive_sell_count = 0
@@ -91,7 +103,7 @@ async def handle_token_creation(websocket, balance1, balance2, balance3, balance
                         if not strategy4_done:
                             if trade_data.get('txType') == 'sell':
                                 End4 = trade_data.get('marketCapSol', End4)
-                                time4 = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                                time4 = transaction_time
                                 strategy4_done = True
 
                         # Обработка для стратегии 5, если она ещё не завершена
@@ -100,7 +112,7 @@ async def handle_token_creation(websocket, balance1, balance2, balance3, balance
                                 total_sell_count += 1
                                 if total_sell_count >= 2:
                                     End5 = trade_data.get('marketCapSol', End5)
-                                    time5 = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                                    time5 = transaction_time
                                     strategy5_done = True
 
                     except asyncio.TimeoutError:
@@ -145,9 +157,11 @@ async def handle_token_creation(websocket, balance1, balance2, balance3, balance
                 # Запись данных в файл
                 with open("TestStatistics.txt", "a") as file:
                     file.write(f"{mint}\n")
-
+                    file.write(f"Транзакции токена:\n")
+                    for entry in transaction_log:
+                        file.write(f"{entry}\n")
                     file.write(
-                        f"MC токена при выходе по первой стратегии: {End1}\nPNL по первой стратегии: {Profit1}\n{Profit_percent1}%\nБаланс: {balance1} SOL\nВремя завершения стратегии: {time1}\n\n")
+                        f"\nMC токена при выходе по первой стратегии: {End1}\nPNL по первой стратегии: {Profit1}\n{Profit_percent1}%\nБаланс: {balance1} SOL\nВремя завершения стратегии: {time1}\n\n")
 
                     file.write(
                         f"MC токена при выходе по второй стратегии: {End2}\nPNL по второй стратегии: {Profit2}\n{Profit_percent2}%\nБаланс: {balance2} SOL\nВремя завершения стратегии: {time2}\n\n")
