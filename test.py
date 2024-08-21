@@ -6,11 +6,17 @@ import time
 import aiohttp
 from datetime import datetime
 
+# TODO:
+#  Это скорее просто информативное сообщение. Этот код может использоваться самостоятельно, так как в нем написан
+#   весь функционал для сбора статистики по токенам и транзакциями.
+#  Код в файлах TokenTradeHandler, TokenMetadataFetcher и TokenSubscriber - тот же самый код, просто разбитый на классы
+#   для облегчения(?) программы
+
 def gen_log_filename():
     dt = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
     # Получаем текущую рабочую директорию скрипта
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    directory = os.path.join(base_dir, "30Seconds")
+    directory = os.path.join(base_dir, "30SecondsOneFile")
     if not os.path.exists(directory):
         os.makedirs(directory)
     return os.path.join(directory, f"TestStatistics-{dt}.log")
