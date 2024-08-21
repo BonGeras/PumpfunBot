@@ -120,6 +120,7 @@ async def handle_token_creation(websocket, balance1, balance2, balance3, balance
 
                 # Если стратегии не завершились до окончания 30 секунд, принудительно завершаем их
                 if not strategy2_done:
+                    End2 = End1
                     time2 = time1
                 if not strategy3_done:
                     time3 = time1
