@@ -47,8 +47,9 @@ class TokenTradeHandler:
                 self.mint = actual_data.get('mint')
                 name = actual_data.get('name')
                 token_uri = actual_data.get('uri')
-                Start = actual_data.get('marketCapSol')
+                initial_market_cap = actual_data.get('marketCapSol')
                 traderPublicKey = actual_data.get('traderPublicKey')
+                Start = initial_market_cap  # По умолчанию начальная цена = цена из сообщения о создании
                 End1 = End2 = End3 = End4 = End5 = Start
 
                 time1 = time2 = time3 = time4 = time5 = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -80,6 +81,7 @@ class TokenTradeHandler:
                     transaction_log = []
                     end_time = time.time() + 30
                     subscription_confirmed = False
+                    received_first_trade = False
 
                     while time.time() < end_time:
                         try:
@@ -89,6 +91,8 @@ class TokenTradeHandler:
 
                             if trade_data.get('message') == 'Successfully subscribed to keys.':
                                 subscription_confirmed = True
+                                # Устанавливаем таймер в 5 секунд для ожидания первой транзакции после подписки
+                                first_trade_deadline = time.time() + 5
                                 continue
 
                             if trade_data.get('txType') == 'create':
@@ -100,13 +104,24 @@ class TokenTradeHandler:
                             is_dev = 'Dev' if trade_data.get('traderPublicKey') == traderPublicKey else 'Non-dev'
                             transaction_log.append(f"[{transaction_time}] - {is_dev} - {tx_type} - {market_cap}")
 
-                            End1, End2, End3, End4, End5 = self.update_strategies(trade_data, subscription_confirmed, End1, End2, End3, End4, End5, traderPublicKey, transaction_time)
-                            time1, time2, time3, time4, time5 = self.update_times(subscription_confirmed, time1, time2, time3, time4, time5)
+                            # Если первая транзакция была получена в течение 5 секунд после подписки, используем её marketCapSol как Start
+                            if subscription_confirmed and not received_first_trade and time.time() <= first_trade_deadline:
+                                Start = trade_data.get('marketCapSol', initial_market_cap)
+                                End1 = End2 = End3 = End4 = End5 = Start
+                                received_first_trade = True
+                                print(f"Первый marketCapSol: {Start}")
+
+                            End1, End2, End3, End4, End5 = self.update_strategies(trade_data, subscription_confirmed,
+                                                                                  End1, End2, End3, End4, End5,
+                                                                                  traderPublicKey, transaction_time)
+                            time1, time2, time3, time4, time5 = self.update_times(subscription_confirmed, time1, time2,
+                                                                                  time3, time4, time5)
 
                         except asyncio.TimeoutError:
                             break
 
-                    self.finalize_strategies(End1, End2, End3, End4, End5, Start, time1, time2, time3, time4, time5, transaction_log, twitter_status, telegram_status, website_status)
+                    self.finalize_strategies(End1, End2, End3, End4, End5, Start, time1, time2, time3, time4, time5,
+                                             transaction_log, twitter_status, telegram_status, website_status)
                     await self.unsubscribe_token(self.mint)
 
             except websockets.ConnectionClosed:
