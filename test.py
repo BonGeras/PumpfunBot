@@ -52,6 +52,7 @@ async def fetch_token_metadata(uri):
 
 
 async def should_process_token(token_uri, mint):
+    status_string = ""
     if token_uri:
         metadata = await fetch_token_metadata(token_uri)
         if metadata:
@@ -61,13 +62,23 @@ async def should_process_token(token_uri, mint):
 
             twitter_status, telegram_status, website_status = check_links(twitter, telegram, website)
 
+            status_string += f"Twitter - {'✅ - ' + twitter if twitter_status else '❌'} | "
+            status_string += f"Telegram - {'✅ - ' + telegram if telegram_status else '❌'} | "
+            status_string += f"Website - {'✅ - ' + website if website_status else '❌'}"
+
+            tags = []
             if website_status and check_text_on_website(website, mint):
-                return True, twitter_status, telegram_status, website_status  # Возвращаем статусы
+                tags.append("-- Webpage approved")
 
             if twitter_status and telegram_status and website_status:
-                return True, twitter_status, telegram_status, website_status  # Возвращаем статусы
+                tags.append("-- Potential")
 
-    return False, None, None, None  # Возвращаем None если токен не подходит
+            if tags:
+                status_string += " " + " ".join(tags)
+                return True, status_string  # Возвращаем статусную строку с тегами
+
+    return False, status_string  # Возвращаем пустую статусную строку, если токен не подходит
+
 
 async def handle_token_creation(websocket, balance1, balance2, balance3, balance4, balance5):
     filename = gen_log_filename()
@@ -92,7 +103,7 @@ async def handle_token_creation(websocket, balance1, balance2, balance3, balance
             time1 = time2 = time3 = time4 = time5 = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
             # Проверяем, следует ли обрабатывать токен и получаем статусы
-            should_process, twitter_status, telegram_status, website_status = await should_process_token(token_uri, mint)
+            should_process, status_string = await should_process_token(token_uri, mint)
             if not should_process:
                 print(f"Токен {mint} пропущен, т.к. не соответствует критериям.")
                 continue  # Пропускаем токен, если он не соответствует критериям
@@ -232,28 +243,15 @@ async def handle_token_creation(websocket, balance1, balance2, balance3, balance
             # Запись данных в файл
             with open(filename, "a") as file:
                 file.write(f"{mint}\n")
-                file.write(f"Транзакции токена:\n")
-                for entry in transaction_log:
-                    file.write(f"{entry}\n")
-
-                file.write(f"\nSocial Media Presence:\n")
-                file.write(
-                    f"Twitter - {twitter_status} | Telegram - {telegram_status} | Website - {website_status}\n")
-
-                file.write(
-                    f"\nMC токена при выходе по первой стратегии: {End1}\nPNL по первой стратегии: {Profit1}\n{Profit_percent1}%\nБаланс: {balance1} SOL\nВремя завершения стратегии: {time1}\n\n")
-
-                file.write(
-                    f"MC токена при выходе по второй стратегии: {End2}\nPNL по второй стратегии: {Profit2}\n{Profit_percent2}%\nБаланс: {balance2} SOL\nВремя завершения стратегии: {time2}\n\n")
-
-                file.write(
-                    f"MC токена при выходе по третьей стратегии: {End3}\nPNL по третьей стратегии: {Profit3}\n{Profit_percent3}%\nБаланс: {balance3} SOL\nВремя завершения стратегии: {time3}\n\n")
-
-                file.write(
-                    f"MC токена при выходе по четвертой стратегии: {End4}\nPNL по четвертой стратегии: {Profit4}\n{Profit_percent4}%\nБаланс: {balance4} SOL\nВремя завершения стратегии: {time4}\n\n")
-
-                file.write(
-                    f"MC токена при выходе по пятой стратегии: {End5}\nPNL по пятой стратегии: {Profit5}\n{Profit_percent5}%\nБаланс: {balance5} SOL\nВремя завершения стратегии: {time5}\n===========\n")
+                file.write(f"{name}\n")
+                file.write(f"{traderPublicKey}\n")
+                file.write(f"Social Media Presence:\n")
+                file.write(f"{status_string}\n")
+                file.write(f"\nMC токена при выходе по первой стратегии: {End1}\nPNL по первой стратегии: {Profit1}\n{Profit_percent1}%\nБаланс: {balance1} SOL\nВремя завершения стратегии: {time1}\n\n")
+                file.write(f"MC токена при выходе по второй стратегии: {End2}\nPNL по второй стратегии: {Profit2}\n{Profit_percent2}%\nБаланс: {balance2} SOL\nВремя завершения стратегии: {time2}\n\n")
+                file.write(f"MC токена при выходе по третьей стратегии: {End3}\nPNL по третьей стратегии: {Profit3}\n{Profit_percent3}%\nБаланс: {balance3} SOL\nВремя завершения стратегии: {time3}\n\n")
+                file.write(f"MC токена при выходе по четвертой стратегии: {End4}\nPNL по четвертой стратегии: {Profit4}\n{Profit_percent4}%\nБаланс: {balance4} SOL\nВремя завершения стратегии: {time4}\n\n")
+                file.write(f"MC токена при выходе по пятой стратегии: {End5}\nPNL по пятой стратегии: {Profit5}\n{Profit_percent5}%\nБаланс: {balance5} SOL\nВремя завершения стратегии: {time5}\n===========\n")
 
             # Отписка от трейдов по токену после завершения всех стратегий
             payload = {
@@ -291,3 +289,13 @@ async def subscribe_to_new_tokens():
 if __name__ == "__main__":
     # Запуск функции подписки на новые токены
     asyncio.run(subscribe_to_new_tokens())
+
+
+# TODO
+#  1)  Сделать проверку цены. Если мы получаем изнчально данные о токене, в которых указан mCap, к примеру, 30, а в
+#    первой транзакции получаем mCap 150 - статистика учитывается некорректно
+#  2)  Сделать список "отработанных" токенов чтобы не было ситуации с несколькими перезаходами в один токен
+#  3)  Сделать черный список для токенов, которые были замечены в повторном использовании ссылок на социалки
+#    (Flying Idiot Аcid Тurtle как пример).
+#  4)  Рассмотреть концепцию с изменяемым временем отработки токена. Если токен имеет оба тега и не находится в
+#    списке токенов, мы можем повысить время отработки до 1-2 минут
