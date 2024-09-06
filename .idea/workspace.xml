@@ -4,27 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="76ad7c09-a3a3-46c5-844a-1519daf9ad46" name="Changes" comment="Механизм более точной выборки токенов и отработка стратегий на них. Ту-ду блок">
-      <change afterPath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/10SecondsOneFile/TS10-20240904T223746Z.log" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/10SecondsOneFile/TS10-20240906T105700Z.log" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/10SecondsOneFile/TS10-20240906T111640Z.log" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/20SecondsOneFile/TS20-20240904T223745Z.log" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/20SecondsOneFile/TS20-20240906T105659Z.log" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/20SecondsOneFile/TS20-20240906T111642Z.log" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/30SecondsOneFile/TS30-20240904T223744Z.log" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/30SecondsOneFile/TS30-20240906T105658Z.log" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/30SecondsOneFile/TS30-20240906T111644Z.log" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/60SecondsOneFile/TS60-20240904T223743Z.log" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/60SecondsOneFile/TS60-20240906T105656Z.log" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/60SecondsOneFile/TS60-20240906T111646Z.log" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TestsDiffTime/test10.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TestsDiffTime/test20.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TestsDiffTime/test60.py" afterDir="false" />
+    <list default="true" id="76ad7c09-a3a3-46c5-844a-1519daf9ad46" name="Changes" comment="Структуризация файлов, обновления в коде и README.md, статистика по стратегиям">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/30Seconds/Занятные" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/subscribe_tokens.py" beforeDir="false" afterPath="$PROJECT_DIR$/subscribe_tokens.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/TestsDiffTime/test30.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,6 +41,9 @@
     &quot;accountId&quot;: &quot;c0efde6b-4305-41c7-98f4-8ecdaf165d9c&quot;
   }
 }</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="QODANA_PROBLEMS_VIEW_TAB" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
 }</component>
@@ -146,7 +131,7 @@
       <workItem from="1722180209714" duration="5684000" />
       <workItem from="1722189690693" duration="323609000" />
       <workItem from="1725484696711" duration="132000" />
-      <workItem from="1725489424841" duration="18129000" />
+      <workItem from="1725489424841" duration="22956000" />
     </task>
     <task id="LOCAL-00001" summary="Initial stage">
       <option name="closed" value="true" />
@@ -292,7 +277,15 @@
       <option name="project" value="LOCAL" />
       <updated>1724598850012</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="Структуризация файлов, обновления в коде и README.md, статистика по стратегиям">
+      <option name="closed" value="true" />
+      <created>1725629559151</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1725629559152</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -309,7 +302,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="origin/Strategy-test" />
+                        <option value="Strategy-test" />
                       </list>
                     </value>
                   </entry>
@@ -339,7 +332,8 @@
     <MESSAGE value="Добавил код для отработки теории с поиском более надежных токенов. Если имеются ссылки в корректном формате и/или на сайте есть минт токена, то мы добавляем теги" />
     <MESSAGE value="Сбор статистики по токенам, которые имеют теги" />
     <MESSAGE value="Механизм более точной выборки токенов и отработка стратегий на них. Ту-ду блок" />
-    <option name="LAST_COMMIT_MESSAGE" value="Механизм более точной выборки токенов и отработка стратегий на них. Ту-ду блок" />
+    <MESSAGE value="Структуризация файлов, обновления в коде и README.md, статистика по стратегиям" />
+    <option name="LAST_COMMIT_MESSAGE" value="Структуризация файлов, обновления в коде и README.md, статистика по стратегиям" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/pumpfunBot$TokenSubscriber.coverage" NAME="TokenSubscriber Coverage Results" MODIFIED="1724274489388" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

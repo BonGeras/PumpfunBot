@@ -3,25 +3,20 @@ import websockets
 import json
 import requests
 import aiohttp
-from datetime import datetime, timezone
 import re
 from bs4 import BeautifulSoup
+import threading
 
 API_KEY = "60uprxa26h5kee3f61x2yp1jd5d6pxa98nbqemk8axt6yp9pchv50tuba9r4atv7d9hmujur69m5amv26rt52k35c9n4ctvm85x3gx2jf517gjvncmtq8jvm5ct6umut99a6rpb6cwyku8dwpwra59rt6cy9b6dn5acuadr9mt6cdjc9t77gc3fb9rkcn1h85w5cjk86hvkuf8"
 
-def write_token_data(data, buy_price, sell_price):
-    price_difference = ((sell_price - buy_price) / buy_price) * 100  # разница в процентах
-    log_data = f"""
-${data['symbol']}
-{data['name']}
-{data['mint']}
-https://pump.fun/{data['mint']}
-Buy price: {buy_price} SOL
-Sell price: {sell_price} SOL
-Price difference: {price_difference:.2f}%
-"""
-    with open("token_contract_addresses.txt", "a") as file:
-        file.write(log_data)
+# Глобальная переменная для управления завершением работы
+stop_event = asyncio.Event()
+
+def write_json_data(filename, data):
+    """Запись данных в файл в формате JSON."""
+    with open(filename, "a") as file:
+        json.dump(data, file, indent=4)
+        file.write("\n")
 
 def trade_token(action, data):
     url = f"https://pumpportal.fun/api/trade?api-key={API_KEY}"
@@ -32,15 +27,13 @@ def trade_token(action, data):
         "denominatedInSol": "true",  # "true" если amount указывает на количество SOL
         "slippage": 10,  # допустимое проскальзывание в процентах
         "priorityFee": 0.005,  # плата за приоритет
-        "pool": "pump"  # обмен для торговли, может быть "pump" или "raydium"
     }
 
     response = requests.post(url, data=payload)
     if response.status_code == 200:
         response_data = response.json()
-        price = response_data.get('price', 'N/A')  # Предполагаем, что API возвращает цену токена
-        print(f"Successfully {action} token. Token price during {action}: {price} SOL")
-        return price
+        print(f"Successfully {action} token {data['mint']}. Response data: {response_data}")
+        return response_data  # Возвращаем весь JSON-ответ
     else:
         print(f"Failed to {action} token. Status: {response.status_code}")
         print(f"Response: {response.text}")
@@ -99,8 +92,16 @@ async def should_process_token(token_uri, mint):
     return False, None
 
 async def handle_token(data):
+    # Проверяем, если сработало событие завершения, выходим из функции
+    if stop_event.is_set():
+        return
+
     # Покупка токена
-    buy_price = trade_token("buy", data)
+    buy_response = trade_token("buy", data)
+
+    if buy_response:
+        # Записываем ответ покупки в JSON-файл
+        write_json_data("trade_logs.json", {"buy": buy_response})
 
     # Проверка тегов
     should_process, status_string = await should_process_token(data.get('uri'), data.get('mint'))
@@ -113,21 +114,25 @@ async def handle_token(data):
         await asyncio.sleep(5)  # Ждем 5 секунд
 
     # Продажа токена
-    sell_price = trade_token("sell", data)
+    sell_response = trade_token("sell", data)
 
-    if buy_price is not None and sell_price is not None:
-        # Запись данных о токене, если обе операции успешны
-        write_token_data(data, buy_price, sell_price)
+    if sell_response:
+        # Записываем ответ продажи в JSON-файл
+        write_json_data("trade_logs.json", {"sell": sell_response})
 
 async def subscribe():
     uri = "wss://pumpportal.fun/api/data"
-    while True:
+    while not stop_event.is_set():  # Пока событие не установлено, продолжаем
         try:
             async with websockets.connect(uri) as websocket:
                 payload = {"method": "subscribeNewToken"}
                 await websocket.send(json.dumps(payload))
 
                 async for message in websocket:
+                    if stop_event.is_set():  # Проверка на событие завершения
+                        print("Завершение подписки...")
+                        return
+
                     data = json.loads(message)
                     required_keys = ['symbol', 'name', 'mint', 'uri']
 
@@ -140,5 +145,18 @@ async def subscribe():
             print(f"Connection error: {e}. Retrying in 5 seconds...")
             await asyncio.sleep(5)
 
+def keyboard_listener():
+    """Поток, ожидающий нажатие клавиши 'E' для завершения работы"""
+    while True:
+        key = input("Press 'E' to stop the program: ").strip().lower()
+        if key == 'e':
+            print("Stopping program...")
+            stop_event.set()  # Устанавливаем событие завершения
+            break
+
 if __name__ == "__main__":
+    # Запускаем поток для прослушивания клавиатуры
+    threading.Thread(target=keyboard_listener, daemon=True).start()
+
+    # Запускаем основную асинхронную функцию
     asyncio.run(subscribe())
