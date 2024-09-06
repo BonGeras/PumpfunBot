@@ -24,10 +24,12 @@ def trade_token(action, data):
     payload = {
         "action": action,
         "mint": data['mint'],
-        "amount": 0.1,  # примерное значение, уточните в документации
+        "amount": 0.1,  # сколько будет вложено
         "denominatedInSol": "true",  # "true" если amount указывает на количество SOL
         "slippage": 20,  # допустимое проскальзывание в процентах
-        "priorityFee": 0.035,  # плата за приоритет
+        "priorityFee": 0.035,  # Плата за приоритет, дает возможность покупать токены быстрее других,
+                               # но будто бы можно легко уйти в минус с такими подкупами. Тут либо плату
+                               # уменьшать, либо повышать вложение. Штука работает 2 раза на каждом токене
     }
 
     response = requests.post(url, data=payload)
@@ -36,7 +38,7 @@ def trade_token(action, data):
     if response.status_code == 200:
         response_data = response.json()
         print(f"[{current_time}] Successfully {action} {data['mint']} token. Response data: {response_data}")
-        return {"time": current_time, "mint": data['mint'],"response": response_data}  # Возвращаем JSON с временем
+        return {"time": current_time, "mint": data['mint'], "response": response_data}  # Возвращаем JSON с временем
     else:
         print(f"[{current_time}] Failed to {action} token. Status: {response.status_code}")
         print(f"Response: {response.text}")
@@ -54,20 +56,42 @@ def check_text_on_website(url, text_to_find):
     try:
         response = requests.get(url)
         response.raise_for_status()
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = BeautifulSoup(response.text, 'html.parser') # не всегда срабатывает, надо перепроверять
+
+        # Проверка на текст, начинающийся с "0x"
+        if any(text.strip().startswith('0x') for text in soup.stripped_strings):
+            print(f"Сайт {url} содержит текст, начинающийся с '0x'. Нахуй его.")
+            return False
+
+        # Если проверка пройдена, ищем текст на странице
         return text_to_find in soup.get_text()
     except requests.exceptions.RequestException as e:
         print(f"Ошибка при запросе: {e}")
         return False
+
 
 def check_links(twitter, telegram, website):
     twitter_pattern = re.compile(r"^https://x\.com/\w+$")
     telegram_pattern = re.compile(r"^https://t\.me/\w+$")
     website_pattern = re.compile(r"^https://[\w\-\.]+\.[a-z]{2,}/?$")
 
-    twitter_valid = bool(twitter and twitter_pattern.match(twitter))
-    telegram_valid = bool(telegram and telegram_pattern.match(telegram))
-    website_valid = bool(website and website_pattern.match(website))
+    # Проверка на подозрительные сайты, содержащие "canva", ".my.canva.site", "my.site", ".online" и тд
+    invalid_substrings = [
+        "canva", ".site", ".my",
+        ".online", ".xyz", "ERC20",
+        "erc20", ".framer", ".framer.website",
+        ".website", ".icu", ".top", "666", ".meme",
+        ".club", ".org", "TRX", "trx", "illuminati"
+    ] # список будет пополняться и далее
+
+    twitter_valid = bool(
+        twitter and twitter_pattern.match(twitter) and not any(substr in twitter for substr in invalid_substrings))
+
+    telegram_valid = bool(
+    telegram and telegram_pattern.match(telegram) and not any(substr in telegram for substr in invalid_substrings))
+
+    website_valid = bool(
+        website and website_pattern.match(website) and not any(substr in website for substr in invalid_substrings))
 
     return twitter_valid, telegram_valid, website_valid
 
@@ -111,7 +135,10 @@ async def handle_token(data):
 
     if should_process:
         print(f"Токен {data['mint']} проходит проверку: {status_string}. Ожидание 35 секунд перед продажей.")
-        await asyncio.sleep(35)  # Ждем 35 секунд
+        await asyncio.sleep(3)  # Ждем 35 секунд --- нужно делать более тщательную проверку токенов, пока отмена
+        # Очень непонятная ситуация с этим подходом. Как можно определять действительно хорошие сайты?
+        # Непонятно сколько еще времени давать на обработку таких токенов. Мб 10-15 секунд?
+        # Надо смотреть на отфильтрованных токенах
     else:
         print(f"Токен {data['mint']} не проходит проверку. Ожидание 3 секунды перед продажей.")
         await asyncio.sleep(3)  # Ждем 3 секунды
@@ -154,7 +181,7 @@ def keyboard_listener():
         key = input("Press 'E' to stop the program: ").strip().lower()
         if key == 'e':
             print("Stopping program...")
-            stop_event.set()  # Устанавливаем событие завершения
+            stop_event.set()  # Устанавливаем событие завершения --- работает тоже коряво, надо фиксить
             break
 
 if __name__ == "__main__":
