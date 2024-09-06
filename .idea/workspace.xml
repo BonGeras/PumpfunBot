@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="76ad7c09-a3a3-46c5-844a-1519daf9ad46" name="Changes" comment="Структуризация файлов, обновления в коде и README.md, статистика по стратегиям">
+    <list default="true" id="76ad7c09-a3a3-46c5-844a-1519daf9ad46" name="Changes" comment="Попытка добавить механизм выхода из токена + обработку тегов">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/subscribe_tokens.py" beforeDir="false" afterPath="$PROJECT_DIR$/subscribe_tokens.py" afterDir="false" />
     </list>
@@ -131,7 +131,7 @@
       <workItem from="1722180209714" duration="5684000" />
       <workItem from="1722189690693" duration="323609000" />
       <workItem from="1725484696711" duration="132000" />
-      <workItem from="1725489424841" duration="22956000" />
+      <workItem from="1725489424841" duration="26177000" />
     </task>
     <task id="LOCAL-00001" summary="Initial stage">
       <option name="closed" value="true" />
@@ -285,7 +285,15 @@
       <option name="project" value="LOCAL" />
       <updated>1725629559152</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="Попытка добавить механизм выхода из токена + обработку тегов">
+      <option name="closed" value="true" />
+      <created>1725640303768</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1725640303768</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -333,7 +341,8 @@
     <MESSAGE value="Сбор статистики по токенам, которые имеют теги" />
     <MESSAGE value="Механизм более точной выборки токенов и отработка стратегий на них. Ту-ду блок" />
     <MESSAGE value="Структуризация файлов, обновления в коде и README.md, статистика по стратегиям" />
-    <option name="LAST_COMMIT_MESSAGE" value="Структуризация файлов, обновления в коде и README.md, статистика по стратегиям" />
+    <MESSAGE value="Попытка добавить механизм выхода из токена + обработку тегов" />
+    <option name="LAST_COMMIT_MESSAGE" value="Попытка добавить механизм выхода из токена + обработку тегов" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/pumpfunBot$TokenSubscriber.coverage" NAME="TokenSubscriber Coverage Results" MODIFIED="1724274489388" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

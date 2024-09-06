@@ -6,6 +6,7 @@ import aiohttp
 import re
 from bs4 import BeautifulSoup
 import threading
+from datetime import datetime
 
 API_KEY = "60uprxa26h5kee3f61x2yp1jd5d6pxa98nbqemk8axt6yp9pchv50tuba9r4atv7d9hmujur69m5amv26rt52k35c9n4ctvm85x3gx2jf517gjvncmtq8jvm5ct6umut99a6rpb6cwyku8dwpwra59rt6cy9b6dn5acuadr9mt6cdjc9t77gc3fb9rkcn1h85w5cjk86hvkuf8"
 
@@ -23,19 +24,21 @@ def trade_token(action, data):
     payload = {
         "action": action,
         "mint": data['mint'],
-        "amount": 0.2,  # примерное значение, уточните в документации
+        "amount": 0.1,  # примерное значение, уточните в документации
         "denominatedInSol": "true",  # "true" если amount указывает на количество SOL
-        "slippage": 10,  # допустимое проскальзывание в процентах
-        "priorityFee": 0.005,  # плата за приоритет
+        "slippage": 20,  # допустимое проскальзывание в процентах
+        "priorityFee": 0.035,  # плата за приоритет
     }
 
     response = requests.post(url, data=payload)
+    current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # Добавляем текущее время
+
     if response.status_code == 200:
         response_data = response.json()
-        print(f"Successfully {action} token {data['mint']}. Response data: {response_data}")
-        return response_data  # Возвращаем весь JSON-ответ
+        print(f"[{current_time}] Successfully {action} {data['mint']} token. Response data: {response_data}")
+        return {"time": current_time, "mint": data['mint'],"response": response_data}  # Возвращаем JSON с временем
     else:
-        print(f"Failed to {action} token. Status: {response.status_code}")
+        print(f"[{current_time}] Failed to {action} token. Status: {response.status_code}")
         print(f"Response: {response.text}")
         return None
 
@@ -85,7 +88,7 @@ async def should_process_token(token_uri, mint):
             if website_status and check_text_on_website(website, mint):
                 status_string += " -- Webpage approved"
 
-            if twitter_status or telegram_status or website_status:
+            if twitter_status and telegram_status and website_status:
                 status_string += " -- Potential"
                 return True, status_string
 
@@ -107,11 +110,11 @@ async def handle_token(data):
     should_process, status_string = await should_process_token(data.get('uri'), data.get('mint'))
 
     if should_process:
-        print(f"Токен {data['mint']} проходит проверку: {status_string}. Ожидание 15 секунд перед продажей.")
-        await asyncio.sleep(15)  # Ждем 15 секунд
+        print(f"Токен {data['mint']} проходит проверку: {status_string}. Ожидание 35 секунд перед продажей.")
+        await asyncio.sleep(35)  # Ждем 35 секунд
     else:
-        print(f"Токен {data['mint']} не проходит проверку. Ожидание 5 секунд перед продажей.")
-        await asyncio.sleep(5)  # Ждем 5 секунд
+        print(f"Токен {data['mint']} не проходит проверку. Ожидание 3 секунды перед продажей.")
+        await asyncio.sleep(3)  # Ждем 3 секунды
 
     # Продажа токена
     sell_response = trade_token("sell", data)
