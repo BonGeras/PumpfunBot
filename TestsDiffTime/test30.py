@@ -13,10 +13,10 @@ import re
 def gen_log_filename():
     dt = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    directory = os.path.join(base_dir, "30SecondsOneFile")
+    directory = os.path.join(base_dir, "TestRunsResults/30SecondsOneFile")
     if not os.path.exists(directory):
         os.makedirs(directory)
-    return os.path.join(directory, f"TestStatistics-{dt}.log")
+    return os.path.join(directory, f"TS30-{dt}.log")
 
 
 def check_text_on_website(url, text_to_find):
@@ -52,7 +52,6 @@ async def fetch_token_metadata(uri):
 
 
 async def should_process_token(token_uri, mint):
-    status_string = ""
     if token_uri:
         metadata = await fetch_token_metadata(token_uri)
         if metadata:
@@ -62,22 +61,18 @@ async def should_process_token(token_uri, mint):
 
             twitter_status, telegram_status, website_status = check_links(twitter, telegram, website)
 
-            status_string += f"Twitter - {'✅ - ' + twitter if twitter_status else '❌'} | "
-            status_string += f"Telegram - {'✅ - ' + telegram if telegram_status else '❌'} | "
-            status_string += f"Website - {'✅ - ' + website if website_status else '❌'}"
+            status_string = f"Twitter - {'✅ - ' + twitter if twitter_status else '❌'} | " \
+                            f"Telegram - {'✅ - ' + telegram if telegram_status else '❌'} | " \
+                            f"Website - {'✅ - ' + website if website_status else '❌'}"
 
-            tags = []
             if website_status and check_text_on_website(website, mint):
-                tags.append("-- Webpage approved")
+                status_string += " -- Webpage approved"
 
-            if twitter_status and telegram_status and website_status:
-                tags.append("-- Potential")
+            if twitter_status or telegram_status or website_status:
+                status_string += " -- Potential"
+                return True, status_string
 
-            if tags:
-                status_string += " " + " ".join(tags)
-                return True, status_string  # Возвращаем статусную строку с тегами
-
-    return False, status_string  # Возвращаем пустую статусную строку, если токен не подходит
+    return False, None
 
 
 async def handle_token_creation(websocket, balance1, balance2, balance3, balance4, balance5):
@@ -243,15 +238,27 @@ async def handle_token_creation(websocket, balance1, balance2, balance3, balance
             # Запись данных в файл
             with open(filename, "a") as file:
                 file.write(f"{mint}\n")
-                file.write(f"{name}\n")
-                file.write(f"{traderPublicKey}\n")
-                file.write(f"Social Media Presence:\n")
+                file.write(f"Транзакции токена:\n")
+                for entry in transaction_log:
+                    file.write(f"{entry}\n")
+
+                file.write(f"\nSocial Media Presence:\n")
                 file.write(f"{status_string}\n")
-                file.write(f"\nMC токена при выходе по первой стратегии: {End1}\nPNL по первой стратегии: {Profit1}\n{Profit_percent1}%\nБаланс: {balance1} SOL\nВремя завершения стратегии: {time1}\n\n")
-                file.write(f"MC токена при выходе по второй стратегии: {End2}\nPNL по второй стратегии: {Profit2}\n{Profit_percent2}%\nБаланс: {balance2} SOL\nВремя завершения стратегии: {time2}\n\n")
-                file.write(f"MC токена при выходе по третьей стратегии: {End3}\nPNL по третьей стратегии: {Profit3}\n{Profit_percent3}%\nБаланс: {balance3} SOL\nВремя завершения стратегии: {time3}\n\n")
-                file.write(f"MC токена при выходе по четвертой стратегии: {End4}\nPNL по четвертой стратегии: {Profit4}\n{Profit_percent4}%\nБаланс: {balance4} SOL\nВремя завершения стратегии: {time4}\n\n")
-                file.write(f"MC токена при выходе по пятой стратегии: {End5}\nPNL по пятой стратегии: {Profit5}\n{Profit_percent5}%\nБаланс: {balance5} SOL\nВремя завершения стратегии: {time5}\n===========\n")
+
+                file.write(
+                    f"\nMC токена при выходе по первой стратегии: {End1}\nPNL по первой стратегии: {Profit1}\n{Profit_percent1}%\nБаланс: {balance1} SOL\nВремя завершения стратегии: {time1}\n\n")
+
+                file.write(
+                    f"MC токена при выходе по второй стратегии: {End2}\nPNL по второй стратегии: {Profit2}\n{Profit_percent2}%\nБаланс: {balance2} SOL\nВремя завершения стратегии: {time2}\n\n")
+
+                file.write(
+                    f"MC токена при выходе по третьей стратегии: {End3}\nPNL по третьей стратегии: {Profit3}\n{Profit_percent3}%\nБаланс: {balance3} SOL\nВремя завершения стратегии: {time3}\n\n")
+
+                file.write(
+                    f"MC токена при выходе по четвертой стратегии: {End4}\nPNL по четвертой стратегии: {Profit4}\n{Profit_percent4}%\nБаланс: {balance4} SOL\nВремя завершения стратегии: {time4}\n\n")
+
+                file.write(
+                    f"MC токена при выходе по пятой стратегии: {End5}\nPNL по пятой стратегии: {Profit5}\n{Profit_percent5}%\nБаланс: {balance5} SOL\nВремя завершения стратегии: {time5}\n===========\n")
 
             # Отписка от трейдов по токену после завершения всех стратегий
             payload = {
@@ -265,6 +272,7 @@ async def handle_token_creation(websocket, balance1, balance2, balance3, balance
             print("Соединение закрыто")
             break
 
+
 async def subscribe_to_new_tokens():
     uri = "wss://pumpportal.fun/api/data"
     balance1 = 2.0  # Изначальный баланс для стратегии 1 - N-ое число времени и выход
@@ -273,29 +281,17 @@ async def subscribe_to_new_tokens():
     balance4 = 2.0  # Изначальный баланс для стратегии 4 - N-ое число времени и выход либо 1 продажа
     balance5 = 2.0  # Изначальный баланс для стратегии 5 - N-ое число времени и выход либо 2 продажи в целом
 
-    async with websockets.connect(uri) as websocket:
-        # Подписка на события создания токенов
-        payload = {
-            "method": "subscribeNewToken",
-        }
-        await websocket.send(json.dumps(payload))
+    try:
+        async with websockets.connect(uri, open_timeout=30) as websocket:
+            payload = {
+                "method": "subscribeNewToken",
+            }
+            await websocket.send(json.dumps(payload))
+            await websocket.recv()
+            await handle_token_creation(websocket, balance1, balance2, balance3, balance4, balance5)
+    except TimeoutError:
+        print("Соединение WebSocket не удалось установить в течение заданного времени.")
 
-        # Игнорирование первого сообщения (подтверждение подписки)
-        await websocket.recv()
-
-        # Обработка каждого нового токена
-        await handle_token_creation(websocket, balance1, balance2, balance3, balance4, balance5)
 
 if __name__ == "__main__":
-    # Запуск функции подписки на новые токены
     asyncio.run(subscribe_to_new_tokens())
-
-
-# TODO
-#  1)  Сделать проверку цены. Если мы получаем изнчально данные о токене, в которых указан mCap, к примеру, 30, а в
-#    первой транзакции получаем mCap 150 - статистика учитывается некорректно
-#  2)  Сделать список "отработанных" токенов чтобы не было ситуации с несколькими перезаходами в один токен
-#  3)  Сделать черный список для токенов, которые были замечены в повторном использовании ссылок на социалки
-#    (Flying Idiot Аcid Тurtle как пример).
-#  4)  Рассмотреть концепцию с изменяемым временем отработки токена. Если токен имеет оба тега и не находится в
-#    списке токенов, мы можем повысить время отработки до 1-2 минут

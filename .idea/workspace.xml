@@ -4,7 +4,28 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="76ad7c09-a3a3-46c5-844a-1519daf9ad46" name="Changes" comment="Развитие тестов с отслеживанием выручки и записью данных" />
+    <list default="true" id="76ad7c09-a3a3-46c5-844a-1519daf9ad46" name="Changes" comment="Механизм более точной выборки токенов и отработка стратегий на них. Ту-ду блок">
+      <change afterPath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/10SecondsOneFile/TS10-20240904T223746Z.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/10SecondsOneFile/TS10-20240906T105700Z.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/10SecondsOneFile/TS10-20240906T111640Z.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/20SecondsOneFile/TS20-20240904T223745Z.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/20SecondsOneFile/TS20-20240906T105659Z.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/20SecondsOneFile/TS20-20240906T111642Z.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/30SecondsOneFile/TS30-20240904T223744Z.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/30SecondsOneFile/TS30-20240906T105658Z.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/30SecondsOneFile/TS30-20240906T111644Z.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/60SecondsOneFile/TS60-20240904T223743Z.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/60SecondsOneFile/TS60-20240906T105656Z.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/60SecondsOneFile/TS60-20240906T111646Z.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestsDiffTime/test10.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestsDiffTime/test20.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestsDiffTime/test60.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/30Seconds/Занятные" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/subscribe_tokens.py" beforeDir="false" afterPath="$PROJECT_DIR$/subscribe_tokens.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/TestsDiffTime/test30.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -18,21 +39,26 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RESET_MODE" value="HARD" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "BonGeras"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;BonGeras&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/BonGeras/PumpfunBot",
-    "accountId": "c0efde6b-4305-41c7-98f4-8ecdaf165d9c"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/BonGeras/PumpfunBot&quot;,
+    &quot;accountId&quot;: &quot;c0efde6b-4305-41c7-98f4-8ecdaf165d9c&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
 }</component>
@@ -42,24 +68,70 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.TokenSubscriber.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test.executor&quot;: &quot;Debug&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Strategy-test&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/anreginevic/Documents/GitHub/pumpfunBot/Statistics_for_60_seconds&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;org.jetbrains.plugins.github.ui.GithubSettingsConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Statistics_for_60_seconds" />
+      <recent name="$PROJECT_DIR$/Statistics_for_30_seconds" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/TestsDiffTime" />
+      <recent name="$PROJECT_DIR$/TestRunsResults" />
+      <recent name="$PROJECT_DIR$/TestsWithTime" />
+      <recent name="$PROJECT_DIR$/TokenData" />
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="TokenSubscriber" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="pumpfunBot" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/TokenSubscriber.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.TokenSubscriber" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-PY-241.18034.82" />
-        <option value="bundled-python-sdk-975db3bf15a3-2767605e8bc2-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.18034.82" />
+        <option value="bundled-js-predefined-d6986cc7102b-7c0b70fcd90d-JavaScript-PY-242.21829.153" />
+        <option value="bundled-python-sdk-464836ebc622-b74155a9e76b-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-242.21829.153" />
       </set>
     </attachedChunks>
   </component>
@@ -72,7 +144,9 @@
       <option name="presentableId" value="Default" />
       <updated>1722180206905</updated>
       <workItem from="1722180209714" duration="5684000" />
-      <workItem from="1722189690693" duration="87982000" />
+      <workItem from="1722189690693" duration="323609000" />
+      <workItem from="1725484696711" duration="132000" />
+      <workItem from="1725489424841" duration="18129000" />
     </task>
     <task id="LOCAL-00001" summary="Initial stage">
       <option name="closed" value="true" />
@@ -106,7 +180,119 @@
       <option name="project" value="LOCAL" />
       <updated>1723766125449</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Развитие тестов с отслеживанием выручки и записью данных">
+      <option name="closed" value="true" />
+      <created>1723766210305</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1723766210305</updated>
+    </task>
+    <task id="LOCAL-00006" summary="1 час тестов, 10 секунд без доп условий, Х2. Работа над сбором статистики">
+      <option name="closed" value="true" />
+      <created>1723809132281</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1723809132281</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Статистика для 5 стратегий с их описанием и краткими выводами">
+      <option name="closed" value="true" />
+      <created>1724161768131</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1724161768131</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Не работает логирование для 1 стратегии">
+      <option name="closed" value="true" />
+      <created>1724231869731</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1724231869731</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Отладка багов. Есть проблемы с чтением продаж и апдейтов.">
+      <option name="closed" value="true" />
+      <created>1724252768242</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1724252768242</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Добавил запись транзакций, проблема с данными 2 стратегии">
+      <option name="closed" value="true" />
+      <created>1724254045596</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1724254045596</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Убрал баг. 2 стратегия хранила начальную цену и не обновляла ее при окончании цикла">
+      <option name="closed" value="true" />
+      <created>1724254401803</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1724254401803</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Убрал баг. 2 стратегия хранила начальную цену и не обновляла ее при окончании цикла">
+      <option name="closed" value="true" />
+      <created>1724265052094</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1724265052094</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Приведение к общему стандарту, создание нового файла для каждого запуска">
+      <option name="closed" value="true" />
+      <created>1724274063182</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1724274063182</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Попытка разбить test.py&#10;на отдельные классы для облегчения кода. Работоспособность классов еще не проверена">
+      <option name="closed" value="true" />
+      <created>1724276227514</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1724276227514</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Исправление механики получение цены. Улучшение механизма сбора статистики">
+      <option name="closed" value="true" />
+      <created>1724287522911</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1724287522911</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Добавил код для отработки теории с поиском более надежных токенов. Если имеются ссылки в корректном формате и/или на сайте есть минт токена, то мы добавляем теги">
+      <option name="closed" value="true" />
+      <created>1724527334549</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1724527334549</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Сбор статистики по токенам, которые имеют теги">
+      <option name="closed" value="true" />
+      <created>1724545074845</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1724545074845</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Механизм более точной выборки токенов и отработка стратегий на них. Ту-ду блок">
+      <option name="closed" value="true" />
+      <created>1724598850012</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1724598850012</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -117,7 +303,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/Strategy-test" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
@@ -128,6 +326,23 @@
     <MESSAGE value="Добавил механизм покупки и подключил тестовый кошелек" />
     <MESSAGE value="Работа над проверкой PnL при каждом трейде" />
     <MESSAGE value="Развитие тестов с отслеживанием выручки и записью данных" />
-    <option name="LAST_COMMIT_MESSAGE" value="Развитие тестов с отслеживанием выручки и записью данных" />
+    <MESSAGE value="1 час тестов, 10 секунд без доп условий, Х2. Работа над сбором статистики" />
+    <MESSAGE value="Статистика для 5 стратегий с их описанием и краткими выводами" />
+    <MESSAGE value="Не работает логирование для 1 стратегии" />
+    <MESSAGE value="Отладка багов. Есть проблемы с чтением продаж и апдейтов." />
+    <MESSAGE value="Добавил запись транзакций, проблема с данными 2 стратегии" />
+    <MESSAGE value="Добавил сбор статистики по ссылкам на странице токена" />
+    <MESSAGE value="Добавил сбор статистики по ссылкам на странице токена" />
+    <MESSAGE value="Приведение к общему стандарту, создание нового файла для каждого запуска" />
+    <MESSAGE value="Попытка разбить test.py&#10;на отдельные классы для облегчения кода. Работоспособность классов еще не проверена" />
+    <MESSAGE value="Исправление механики получение цены. Улучшение механизма сбора статистики" />
+    <MESSAGE value="Добавил код для отработки теории с поиском более надежных токенов. Если имеются ссылки в корректном формате и/или на сайте есть минт токена, то мы добавляем теги" />
+    <MESSAGE value="Сбор статистики по токенам, которые имеют теги" />
+    <MESSAGE value="Механизм более точной выборки токенов и отработка стратегий на них. Ту-ду блок" />
+    <option name="LAST_COMMIT_MESSAGE" value="Механизм более точной выборки токенов и отработка стратегий на них. Ту-ду блок" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/pumpfunBot$TokenSubscriber.coverage" NAME="TokenSubscriber Coverage Results" MODIFIED="1724274489388" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/pumpfunBot$test.coverage" NAME="test Coverage Results" MODIFIED="1724248056167" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
