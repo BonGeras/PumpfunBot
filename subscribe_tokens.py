@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 import threading
 from datetime import datetime
 
-API_KEY = "60uprxa26h5kee3f61x2yp1jd5d6pxa98nbqemk8axt6yp9pchv50tuba9r4atv7d9hmujur69m5amv26rt52k35c9n4ctvm85x3gx2jf517gjvncmtq8jvm5ct6umut99a6rpb6cwyku8dwpwra59rt6cy9b6dn5acuadr9mt6cdjc9t77gc3fb9rkcn1h85w5cjk86hvkuf8"
+API_KEY = "60uprxa26h5kee3f61x2yp1jd5d6pxa98nbqemk8axt6yp9pchv50tuba9r4atv7d9hmujur69m5ct6umut99a6rpb6cwyku8dwpwra59rt6cy9b6dn5acuadr9mt6cdjc9t77gc3fb9rkcn1h85w5cjk86hvkuf8"
 
 # Глобальная переменная для управления завершением работы
 stop_event = asyncio.Event()
@@ -21,16 +21,28 @@ def write_json_data(filename, data):
 
 def trade_token(action, data):
     url = f"https://pumpportal.fun/api/trade?api-key={API_KEY}"
-    payload = {
-        "action": action,
-        "mint": data['mint'],
-        "amount": 0.1,  # сколько будет вложено
-        "denominatedInSol": "true",  # "true" если amount указывает на количество SOL
-        "slippage": 20,  # допустимое проскальзывание в процентах
-        "priorityFee": 0.035,  # Плата за приоритет, дает возможность покупать токены быстрее других,
+    if action == "buy":
+        payload = {
+            "action": action,
+            "mint": data['mint'],
+            "amount": 0.1,  # сколько будет вложено
+            "denominatedInSol": "true",  # "true" если amount указывает на количество SOL
+            "slippage": 20,  # допустимое проскальзывание в процентах
+            "priorityFee": 0.002,  # Плата за приоритет, дает возможность покупать токены быстрее других,
                                # но будто бы можно легко уйти в минус с такими подкупами. Тут либо плату
                                # уменьшать, либо повышать вложение. Штука работает 2 раза на каждом токене
-    }
+        }
+    elif action == "sell":
+        payload = {
+            "action": action,
+            "mint": data['mint'],
+            "amount": "100%",  # Продаем 100% купленных токенов
+            "denominatedInSol": "false",  # "false", потому что продаем процент от токенов
+            "slippage": 20,  # допустимое проскальзывание в процентах
+            "priorityFee": 0.002,  # Плата за приоритет, дает возможность покупать токены быстрее других,
+                               # но будто бы можно легко уйти в минус с такими подкупами. Тут либо плату
+                               # уменьшать, либо повышать вложение. Штука работает 2 раза на каждом токене
+        }
 
     response = requests.post(url, data=payload)
     current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # Добавляем текущее время
@@ -56,7 +68,7 @@ def check_text_on_website(url, text_to_find):
     try:
         response = requests.get(url)
         response.raise_for_status()
-        soup = BeautifulSoup(response.text, 'html.parser') # не всегда срабатывает, надо перепроверять
+        soup = BeautifulSoup(response.text, 'html.parser')  # не всегда срабатывает, надо перепроверять
 
         # Проверка на текст, начинающийся с "0x"
         if any(text.strip().startswith('0x') for text in soup.stripped_strings):
@@ -82,13 +94,13 @@ def check_links(twitter, telegram, website):
         "erc20", ".framer", ".framer.website",
         ".website", ".icu", ".top", "666", ".meme",
         ".club", ".org", "TRX", "trx", "illuminati"
-    ] # список будет пополняться и далее
+    ]  # список будет пополняться и далее
 
     twitter_valid = bool(
         twitter and twitter_pattern.match(twitter) and not any(substr in twitter for substr in invalid_substrings))
 
     telegram_valid = bool(
-    telegram and telegram_pattern.match(telegram) and not any(substr in telegram for substr in invalid_substrings))
+        telegram and telegram_pattern.match(telegram) and not any(substr in telegram for substr in invalid_substrings))
 
     website_valid = bool(
         website and website_pattern.match(website) and not any(substr in website for substr in invalid_substrings))
