@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 import threading
 from datetime import datetime
 
-API_KEY = "60uprxa26h5kee3f61x2yp1jd5d6pxa98nbqemk8axt6yp9pchv50tuba9r4atv7d9hmujur69m5ct6umut99a6rpb6cwyku8dwpwra59rt6cy9b6dn5acuadr9mt6cdjc9t77gc3fb9rkcn1h85w5cjk86hvkuf8"
+API_KEY = "60uprxa26h5kee3f61x2yp1jd5d6pxa98nbqemk8axt6yp9pchv50tuba9r4atv7d9hmujur69m5amv26rt52k35c9n4ctvm85x3gx2jf517gjvncmtq8jvm5ct6umut99a6rpb6cwyku8dwpwra59rt6cy9b6dn5acuadr9mt6cdjc9t77gc3fb9rkcn1h85w5cjk86hvkuf8"
 
 # Глобальная переменная для управления завершением работы
 stop_event = asyncio.Event()
@@ -25,12 +25,10 @@ def trade_token(action, data):
         payload = {
             "action": action,
             "mint": data['mint'],
-            "amount": 0.1,  # сколько будет вложено
+            "amount": 0.2,  # сколько будет вложено
             "denominatedInSol": "true",  # "true" если amount указывает на количество SOL
-            "slippage": 20,  # допустимое проскальзывание в процентах
-            "priorityFee": 0.002,  # Плата за приоритет, дает возможность покупать токены быстрее других,
-                               # но будто бы можно легко уйти в минус с такими подкупами. Тут либо плату
-                               # уменьшать, либо повышать вложение. Штука работает 2 раза на каждом токене
+            "slippage": 10,  # допустимое проскальзывание в процентах
+            "priorityFee": 0.005,  # Плата за приоритет при покупке
         }
     elif action == "sell":
         payload = {
@@ -39,9 +37,7 @@ def trade_token(action, data):
             "amount": "100%",  # Продаем 100% купленных токенов
             "denominatedInSol": "false",  # "false", потому что продаем процент от токенов
             "slippage": 20,  # допустимое проскальзывание в процентах
-            "priorityFee": 0.002,  # Плата за приоритет, дает возможность покупать токены быстрее других,
-                               # но будто бы можно легко уйти в минус с такими подкупами. Тут либо плату
-                               # уменьшать, либо повышать вложение. Штука работает 2 раза на каждом токене
+            "priorityFee": 0.001,  # Плата за приоритет при продаже
         }
 
     response = requests.post(url, data=payload)
@@ -87,14 +83,16 @@ def check_links(twitter, telegram, website):
     telegram_pattern = re.compile(r"^https://t\.me/\w+$")
     website_pattern = re.compile(r"^https://[\w\-\.]+\.[a-z]{2,}/?$")
 
-    # Проверка на подозрительные сайты, содержащие "canva", ".my.canva.site", "my.site", ".online" и тд
+    # Проверка на подозрительные сайты
     invalid_substrings = [
         "canva", ".site", ".my",
-        ".online", ".xyz", "ERC20",
+        ".online", "ERC20",
         "erc20", ".framer", ".framer.website",
-        ".website", ".icu", ".top", "666", ".meme",
-        ".club", ".org", "TRX", "trx", "illuminati"
-    ]  # список будет пополняться и далее
+        ".website", ".icu", ".top", "666",
+        ".club", ".org", "TRX", "trx", "illuminati",
+        ".finance", ".lol", ".cc", "/home", ".lat", ".vip",
+        ".tel"
+    ]
 
     twitter_valid = bool(
         twitter and twitter_pattern.match(twitter) and not any(substr in twitter for substr in invalid_substrings))
@@ -117,32 +115,30 @@ async def should_process_token(token_uri, mint):
 
             twitter_status, telegram_status, website_status = check_links(twitter, telegram, website)
 
+            # Подсчитываем количество успешных проверок
+            valid_checks = sum([twitter_status, telegram_status, website_status])
+
+            # Строка статуса для логирования
             status_string = f"Twitter - {'✅ - ' + twitter if twitter_status else '❌'} | " \
                             f"Telegram - {'✅ - ' + telegram if telegram_status else '❌'} | " \
                             f"Website - {'✅ - ' + website if website_status else '❌'}"
 
-            if website_status and check_text_on_website(website, mint):
-                status_string += " -- Webpage approved"
-
-            if twitter_status and telegram_status and website_status:
+            # Проверяем, набрали ли мы два пункта и выше
+            if valid_checks >= 2:
+                # Дополнительная проверка для сайта
+                if website_status and check_text_on_website(website, mint):
+                    status_string += " -- Webpage approved"
                 status_string += " -- Potential"
                 return True, status_string
 
     return False, None
 
+
+
 async def handle_token(data):
-    # Проверяем, если сработало событие завершения, выходим из функции
     if stop_event.is_set():
         return
 
-    # Покупка токена
-    buy_response = trade_token("buy", data)
-
-    if buy_response:
-        # Записываем ответ покупки в JSON-файл
-        write_json_data("trade_logs.json", {"buy": buy_response})
-
-    # Проверка тегов
     should_process, status_string = await should_process_token(data.get('uri'), data.get('mint'))
 
     if should_process:

@@ -4,10 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="76ad7c09-a3a3-46c5-844a-1519daf9ad46" name="Changes" comment="Проверка ссылок и текста на страницах. Некоторые размышления в комментариях">
+    <list default="true" id="76ad7c09-a3a3-46c5-844a-1519daf9ad46" name="Changes" comment="исправил ключевую ошибку">
+      <change afterPath="$PROJECT_DIR$/trade_without_tags.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/subscribe_tokens.py" beforeDir="false" afterPath="$PROJECT_DIR$/subscribe_tokens.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tokenData.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/subscribe_tokens.py" beforeDir="false" afterPath="$PROJECT_DIR$/trade_with_tags.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,7 +45,7 @@
   }
 }</component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="QODANA_PROBLEMS_VIEW_TAB" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
@@ -76,11 +78,11 @@
       <recent name="$PROJECT_DIR$/Statistics_for_30_seconds" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/Main" />
       <recent name="$PROJECT_DIR$/TestsDiffTime" />
       <recent name="$PROJECT_DIR$/TestRunsResults" />
       <recent name="$PROJECT_DIR$/TestsWithTime" />
-      <recent name="$PROJECT_DIR$/TokenData" />
-      <recent name="$PROJECT_DIR$" />
     </key>
   </component>
   <component name="RunManager">
@@ -133,7 +135,10 @@
       <workItem from="1722189690693" duration="323609000" />
       <workItem from="1725484696711" duration="132000" />
       <workItem from="1725489424841" duration="31976000" />
-      <workItem from="1725649878805" duration="4934000" />
+      <workItem from="1725649878805" duration="24611000" />
+      <workItem from="1725831935731" duration="3105000" />
+      <workItem from="1725883118780" duration="16495000" />
+      <workItem from="1725993003224" duration="207000" />
     </task>
     <task id="LOCAL-00001" summary="Initial stage">
       <option name="closed" value="true" />
@@ -311,7 +316,15 @@
       <option name="project" value="LOCAL" />
       <updated>1725650610648</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="исправил ключевую ошибку">
+      <option name="closed" value="true" />
+      <created>1725705533193</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1725705533193</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -362,7 +375,8 @@
     <MESSAGE value="Попытка добавить механизм выхода из токена + обработку тегов" />
     <MESSAGE value="Изменения в таймингах и настройках и логах" />
     <MESSAGE value="Проверка ссылок и текста на страницах. Некоторые размышления в комментариях" />
-    <option name="LAST_COMMIT_MESSAGE" value="Проверка ссылок и текста на страницах. Некоторые размышления в комментариях" />
+    <MESSAGE value="исправил ключевую ошибку" />
+    <option name="LAST_COMMIT_MESSAGE" value="исправил ключевую ошибку" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/pumpfunBot$TokenSubscriber.coverage" NAME="TokenSubscriber Coverage Results" MODIFIED="1724274489388" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

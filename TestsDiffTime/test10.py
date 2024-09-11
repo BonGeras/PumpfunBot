@@ -107,11 +107,11 @@ async def handle_token_creation(websocket, balance1, balance2, balance3, balance
 
             # Уменьшение балансов на 0.21 SOL для всех стратегий
             investment = 0.2
-            balance1 -= (investment + 0.01)
-            balance2 -= (investment + 0.01)
-            balance3 -= (investment + 0.01)
-            balance4 -= (investment + 0.01)
-            balance5 -= (investment + 0.01)
+            balance1 -= (investment + 0.002)
+            balance2 -= (investment + 0.002)
+            balance3 -= (investment + 0.002)
+            balance4 -= (investment + 0.002)
+            balance5 -= (investment + 0.002)
             print(f"Инвестировано 0.2 SOL в {name}. Балансы стратегий: {balance1}, {balance2}, {balance3}, {balance4}, {balance5} SOL")
 
             # Подписка на трейды по токену
@@ -131,7 +131,7 @@ async def handle_token_creation(websocket, balance1, balance2, balance3, balance
             strategy5_done = False
             transaction_log = []  # Лог для всех транзакций
 
-            # Сбор данных в течение 30 секунд для всех стратегий
+            # Сбор данных в течение 10 секунд для всех стратегий
             end_time = time.time() + 10
             subscription_confirmed = False
 
@@ -210,30 +210,30 @@ async def handle_token_creation(websocket, balance1, balance2, balance3, balance
                 time5 = time1
 
             # Вычисление Profit и Profit_percent для всех стратегий
-            Profit1 = End1 - Start
-            Profit_percent1 = (Profit1 / Start) * 100 if Start != 0 else 0
+            Profit1 = End1 - (Start + 2)
+            Profit_percent1 = (Profit1 / (Start + 2)) * 100 if Start != 0 else 0
             profit_in_sol1 = investment * (1 + Profit_percent1 / 100)
-            balance1 += (profit_in_sol1 - 0.01)
+            balance1 += (profit_in_sol1 - 0.002)
 
-            Profit2 = End2 - Start
-            Profit_percent2 = (Profit2 / Start) * 100 if Start != 0 else 0
+            Profit2 = End2 - (Start + 2)
+            Profit_percent2 = (Profit2 / (Start + 2)) * 100 if Start != 0 else 0
             profit_in_sol2 = investment * (1 + Profit_percent2 / 100)
-            balance2 += (profit_in_sol2 - 0.01)
+            balance2 += (profit_in_sol2 - 0.002)
 
-            Profit3 = End3 - Start
-            Profit_percent3 = (Profit3 / Start) * 100 if Start != 0 else 0
+            Profit3 = End3 - (Start + 2)
+            Profit_percent3 = (Profit3 / (Start + 2)) * 100 if Start != 0 else 0
             profit_in_sol3 = investment * (1 + Profit_percent3 / 100)
-            balance3 += (profit_in_sol3 - 0.01)
+            balance3 += (profit_in_sol3 - 0.002)
 
-            Profit4 = End4 - Start
-            Profit_percent4 = (Profit4 / Start) * 100 if Start != 0 else 0
+            Profit4 = End4 - (Start + 2)
+            Profit_percent4 = (Profit4 / (Start + 2)) * 100 if Start != 0 else 0
             profit_in_sol4 = investment * (1 + Profit_percent4 / 100)
-            balance4 += (profit_in_sol4 - 0.01)
+            balance4 += (profit_in_sol4 - 0.002)
 
-            Profit5 = End5 - Start
-            Profit_percent5 = (Profit5 / Start) * 100 if Start != 0 else 0
+            Profit5 = End5 - (Start + 2)
+            Profit_percent5 = (Profit5 / (Start + 2)) * 100 if Start != 0 else 0
             profit_in_sol5 = investment * (1 + Profit_percent5 / 100)
-            balance5 += (profit_in_sol5 - 0.01)
+            balance5 += (profit_in_sol5 - 0.002)
 
             # Запись данных в файл
             with open(filename, "a") as file:
