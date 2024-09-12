@@ -31,9 +31,10 @@ def check_links(twitter, telegram, website):
         ".website", ".icu", ".top", "666",
         ".club", ".org", "TRX", "trx", "illuminati",
         ".finance", ".lol", ".cc", "/home", ".lat", ".vip",
-        ".tel", ".mirror", ".bond"
+        ".tel", ".mirror", ".bond", ".drr.ac", ".ac"
     ]
 
+    # Проверяем ссылки на подозрительные сайты и правильный формат
     twitter_valid = bool(
         twitter and twitter_pattern.match(twitter) and not any(substr in twitter for substr in invalid_substrings))
 
@@ -42,6 +43,18 @@ def check_links(twitter, telegram, website):
 
     website_valid = bool(
         website and website_pattern.match(website) and not any(substr in website for substr in invalid_substrings))
+
+    # Проверка на одинаковые ссылки
+    if twitter == telegram or twitter == website or telegram == website:
+        twitter_valid = telegram_valid = website_valid = False
+
+    # Проверка на то, что веб-сайт не ведет на Twitter или Telegram
+    if website and ("x.com" in website or "t.me" in website):
+        website_valid = False
+
+    # Если сайт некорректный, отклоняем все ссылки
+    if website and not website_valid:
+        twitter_valid = telegram_valid = False
 
     return twitter_valid, telegram_valid, website_valid
 
@@ -115,7 +128,6 @@ async def handle_token_creation(websocket):
             print(f"{current_time} - Данные о создании токена: {actual_data}")
 
             mint = actual_data.get('mint')
-            name = actual_data.get('name')
             token_uri = actual_data.get('uri')
             traderPublicKey = actual_data.get('traderPublicKey')
 
@@ -139,8 +151,10 @@ async def handle_token_creation(websocket):
 
             transaction_log = []
             strategy_done = False
-            end_time = time.time() + 20 # Время отработки
+            end_time = time.time() + 20  # Время отработки
             subscription_confirmed = False
+            sell_count = 0  # Счётчик транзакций типа 'sell'
+            transaction_count = 0  # Счётчик всех транзакций
 
             while time.time() < end_time:
                 try:
@@ -161,7 +175,20 @@ async def handle_token_creation(websocket):
                     is_dev = 'Dev' if trade_data.get('traderPublicKey') == traderPublicKey else 'Non-dev'
                     transaction_log.append(f"[{transaction_time}] - {is_dev} - {tx_type} - {market_cap}")
 
-                    if subscription_confirmed and not strategy_done and trade_data.get('txType') == 'sell' and trade_data.get('traderPublicKey') == traderPublicKey:
+                    # Проверка на первые 3 транзакции и количество продаж 'sell' --- ТРЕБУЕТСЯ ДОРАБОТКА!!!!
+                    if tx_type == 'sell':
+                        sell_count += 1
+                    transaction_count += 1
+
+                    # Если 2 из первых 3 транзакций являются 'sell', продаём токен
+                    if transaction_count <= 3 and sell_count >= 2:
+                        print(f"Обнаружены 2 продажи среди первых 3 транзакций для токена {mint}. Продажа токена.")
+                        trade_token("sell", {"mint": mint})
+                        strategy_done = True
+                        break
+
+                    # Продажа, если Dev продаёт токен
+                    if subscription_confirmed and not strategy_done and tx_type == 'sell' and trade_data.get('traderPublicKey') == traderPublicKey:
                         print(f"Обнаружена продажа от Dev для токена {mint}. Продажа токена.")
                         trade_token("sell", {"mint": mint})
                         strategy_done = True
@@ -174,7 +201,8 @@ async def handle_token_creation(websocket):
                 print(f"Держим токен {mint} 20 секунд. Продаем по истечении времени.")
                 trade_token("sell", {"mint": mint})
 
-            with open(filename, "a") as file:
+            # Открываем файл с указанием кодировки UTF-8
+            with open(filename, "a", encoding="utf-8") as file:
                 file.write(f"{mint}\n")
                 file.write(f"Транзакции токена:\n")
                 for entry in transaction_log:
@@ -193,6 +221,8 @@ async def handle_token_creation(websocket):
         except websockets.ConnectionClosed:
             print("Соединение закрыто")
             break
+
+
 
 async def subscribe_to_new_tokens():
     uri = "wss://pumpportal.fun/api/data"
