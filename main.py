@@ -95,8 +95,14 @@ async def fetch_token_metadata(uri):
     async with aiohttp.ClientSession() as session:
         async with session.get(uri) as response:
             if response.status == 200:
-                return await response.json()
+                content_type = response.headers.get('Content-Type', '')
+                if 'application/json' in content_type:
+                    return await response.json()
+                else:
+                    print(f"Unexpected content type: {content_type} at URL: {uri}")
+                    return None
             else:
+                print(f"Failed to fetch metadata from {uri}. Status: {response.status}")
                 return None
 
 async def should_process_token(token_uri, mint):
@@ -138,15 +144,13 @@ async def handle_token_creation(websocket):
 
             trade_token("buy", {"mint": mint})
 
-            print(f"Токен {mint} проходит проверку и будет обработан.")
-
-
-
             payload = {
                 "method": "subscribeTokenTrade",
                 "keys": [mint]
             }
             await websocket.send(json.dumps(payload))
+
+            print(f"Токен {mint} проходит проверку и будет обработан.")
             print(f"Подписка на трейды по токену: {mint}")
 
             transaction_log = []
