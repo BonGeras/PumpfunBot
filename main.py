@@ -18,6 +18,24 @@ def gen_log_filename():
         os.makedirs(directory)
     return os.path.join(directory, f"TS20-{dt}.log")
 
+# def add_to_holdings(mint):
+#     """Добавление токена в файл holdings.txt."""
+#     with open("holdings.txt", "a", encoding="utf-8") as file:
+#         file.write(f"{mint}\n")
+#
+# def remove_from_holdings(mint):
+#     """Удаление токена из файла holdings.txt."""
+#     if not os.path.exists("holdings.txt"):
+#         return
+#
+#     with open("holdings.txt", "r", encoding="utf-8") as file:
+#         lines = file.readlines()
+#
+#     with open("holdings.txt", "w", encoding="utf-8") as file:
+#         for line in lines:
+#             if line.strip() != mint:
+#                 file.write(line)
+
 def check_links(twitter, telegram, website):
     twitter_pattern = re.compile(r"^https://x\.com/\w+$")
     telegram_pattern = re.compile(r"^https://t\.me/\w+$")
@@ -85,6 +103,10 @@ def trade_token(action, data):
     if response.status_code == 200:
         response_data = response.json()
         print(f"[{current_time}] Successfully {action} {data['mint']} token. Response data: {response_data}")
+        # if action == "buy":
+        #     add_to_holdings(data['mint'])  # Добавляем в holdings при покупке
+        # elif action == "sell":
+        #     remove_from_holdings(data['mint'])  # Удаляем из holdings при продаже
         return {"time": current_time, "mint": data['mint'], "response": response_data}
     else:
         print(f"[{current_time}] Failed to {action} token. Status: {response.status_code}")
@@ -179,17 +201,25 @@ async def handle_token_creation(websocket):
                     is_dev = 'Dev' if trade_data.get('traderPublicKey') == traderPublicKey else 'Non-dev'
                     transaction_log.append(f"[{transaction_time}] - {is_dev} - {tx_type} - {market_cap}")
 
-                    # Проверка на первые 3 транзакции и количество продаж 'sell' --- ТРЕБУЕТСЯ ДОРАБОТКА!!!!
-                    if tx_type == 'sell':
-                        sell_count += 1
-                    transaction_count += 1
+                    # Проверка на первые 3 транзакции и количество продаж 'sell', если MC ниже 45 SOL
+                    try:
+                        # Преобразуем market_cap в число для проверки
+                        market_cap = float(trade_data.get('marketCapSol', '0'))
+                    except ValueError:
+                        market_cap = 0  # Если не удалось преобразовать, считаем рыночную капитализацию равной 0
 
-                    # Если 2 из первых 3 транзакций являются 'sell', продаём токен
-                    if transaction_count <= 3 and sell_count >= 2:
-                        print(f"Обнаружены 2 продажи среди первых 3 транзакций для токена {mint}. Продажа токена.")
-                        trade_token("sell", {"mint": mint})
-                        strategy_done = True
-                        break
+                    if market_cap < 45:  # Проверка рыночной капитализации
+                        if tx_type == 'sell':
+                            sell_count += 1
+                        transaction_count += 1
+
+                        # Если 2 из первых 3 транзакций являются 'sell', продаём токен
+                        if transaction_count <= 3 and sell_count >= 2:
+                            trade_token("sell", {"mint": mint})
+                            strategy_done = True
+                            print(f"Обнаружены 2 продажи среди первых 3 транзакций для токена {mint} с MC {market_cap}. Продажа токена.")
+                            break
+
 
                     # Продажа, если Dev продаёт токен
                     if subscription_confirmed and not strategy_done and tx_type == 'sell' and trade_data.get('traderPublicKey') == traderPublicKey:
