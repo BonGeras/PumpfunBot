@@ -16,25 +16,7 @@ def gen_log_filename():
     directory = os.path.join(base_dir, "MainTest")
     if not os.path.exists(directory):
         os.makedirs(directory)
-    return os.path.join(directory, f"TS20-{dt}.log")
-
-# def add_to_holdings(mint):
-#     """Добавление токена в файл holdings.txt."""
-#     with open("holdings.txt", "a", encoding="utf-8") as file:
-#         file.write(f"{mint}\n")
-#
-# def remove_from_holdings(mint):
-#     """Удаление токена из файла holdings.txt."""
-#     if not os.path.exists("holdings.txt"):
-#         return
-#
-#     with open("holdings.txt", "r", encoding="utf-8") as file:
-#         lines = file.readlines()
-#
-#     with open("holdings.txt", "w", encoding="utf-8") as file:
-#         for line in lines:
-#             if line.strip() != mint:
-#                 file.write(line)
+    return os.path.join(directory, f"MainTestRun-16.log")
 
 def check_links(twitter, telegram, website):
     twitter_pattern = re.compile(r"^https://x\.com/\w+$")
@@ -49,7 +31,7 @@ def check_links(twitter, telegram, website):
         ".website", ".icu", ".top", "666",
         ".club", ".org", "TRX", "trx", "illuminati",
         ".finance", ".lol", ".cc", "/home", ".lat", ".vip",
-        ".tel", ".mirror", ".bond", ".drr.ac", ".ac"
+        ".tel", ".mirror", ".bond", ".drr.ac", ".ac", ".app"
     ]
 
     # Проверяем ссылки на подозрительные сайты и правильный формат
@@ -103,10 +85,6 @@ def trade_token(action, data):
     if response.status_code == 200:
         response_data = response.json()
         print(f"[{current_time}] Successfully {action} {data['mint']} token. Response data: {response_data}")
-        # if action == "buy":
-        #     add_to_holdings(data['mint'])  # Добавляем в holdings при покупке
-        # elif action == "sell":
-        #     remove_from_holdings(data['mint'])  # Удаляем из holdings при продаже
         return {"time": current_time, "mint": data['mint'], "response": response_data}
     else:
         print(f"[{current_time}] Failed to {action} token. Status: {response.status_code}")
@@ -115,20 +93,31 @@ def trade_token(action, data):
 
 async def fetch_token_metadata(uri):
     async with aiohttp.ClientSession() as session:
-        async with session.get(uri) as response:
-            if response.status == 200:
-                content_type = response.headers.get('Content-Type', '')
-                if 'application/json' in content_type:
-                    return await response.json()
+        try:
+            async with session.get(uri) as response:
+                if response.status == 200:
+                    content_type = response.headers.get('Content-Type', '')
+                    if 'application/json' in content_type:
+                        return await response.json()
+                    else:
+                        print(f"Unexpected content type: {content_type} at URL: {uri}")
+                        return None
                 else:
-                    print(f"Unexpected content type: {content_type} at URL: {uri}")
+                    print(f"Failed to fetch metadata from {uri}. Status: {response.status}")
                     return None
-            else:
-                print(f"Failed to fetch metadata from {uri}. Status: {response.status}")
-                return None
+        except aiohttp.ClientError as e:
+            print(f"Error fetching metadata from {uri}: {e}")
+            return None
+        except Exception as e:
+            print(f"Unexpected error fetching metadata from {uri}: {e}")
+            return None
 
 async def should_process_token(token_uri, mint):
     if token_uri:
+        # Check if token_uri is a valid URL
+        if not token_uri.startswith(('http://', 'https://')):
+            print(f"Invalid token URI: {token_uri}. Skipping token {mint}.")
+            return False, None
         metadata = await fetch_token_metadata(token_uri)
         if metadata:
             twitter = metadata.get('twitter', None)
@@ -177,10 +166,16 @@ async def handle_token_creation(websocket):
 
             transaction_log = []
             strategy_done = False
-            end_time = time.time() + 20  # Время отработки
+            end_time = time.time() + 10  # Initially hold for 10 seconds
             subscription_confirmed = False
-            sell_count = 0  # Счётчик транзакций типа 'sell'
-            transaction_count = 0  # Счётчик всех транзакций
+            sell_count = 0  # Counter for 'sell' transactions
+            transaction_count = 0  # Counter for all transactions
+
+            # Variables for thresholds
+            initial_market_cap = None
+            thresholds_applied = False
+            crossed_52 = False
+            crossed_80 = False
 
             while time.time() < end_time:
                 try:
@@ -197,21 +192,42 @@ async def handle_token_creation(websocket):
 
                     transaction_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     tx_type = trade_data.get('txType')
-                    market_cap = trade_data.get('marketCapSol', 'N/A')
+                    market_cap_str = trade_data.get('marketCapSol', '0')
                     is_dev = 'Dev' if trade_data.get('traderPublicKey') == traderPublicKey else 'Non-dev'
-                    transaction_log.append(f"[{transaction_time}] - {is_dev} - {tx_type} - {market_cap}")
+                    transaction_log.append(f"[{transaction_time}] - {is_dev} - {tx_type} - {market_cap_str}")
 
-                    # Проверка на первые 3 транзакции и количество продаж 'sell', если MC ниже 45 SOL
+                    # Convert market_cap to float
                     try:
-                        # Преобразуем market_cap в число для проверки
-                        market_cap = float(trade_data.get('marketCapSol', '0'))
+                        market_cap = float(market_cap_str)
                     except ValueError:
-                        market_cap = 0  # Если не удалось преобразовать, считаем рыночную капитализацию равной 0
+                        market_cap = 0  # If unable to convert, set market_cap to 0
 
-                    if market_cap < 45:  # Проверка рыночной капитализации
+                    # Set initial_market_cap from the first trade after subscription
+                    if initial_market_cap is None:
+                        initial_market_cap = market_cap
+                        if initial_market_cap >= 100:
+                            thresholds_applied = False  # Do not apply thresholds
+                            print(f"Initial market cap is {initial_market_cap} SOL, thresholds will not be applied.")
+                        else:
+                            thresholds_applied = True
+                            print(f"Initial market cap is {initial_market_cap} SOL, thresholds will be applied.")
+
+                    # Apply thresholds if applicable
+                    if thresholds_applied:
+                        if not crossed_52 and market_cap >= 52:
+                            end_time += 5  # Add 5 seconds to holding time
+                            crossed_52 = True
+                            print(f"Market cap crossed 52 SOL for token {mint}. Added 5 seconds to holding time.")
+                        if not crossed_80 and market_cap >= 80:
+                            end_time += 5  # Add another 5 seconds to holding time
+                            crossed_80 = True
+                            print(f"Market cap crossed 80 SOL for token {mint}. Added 5 seconds to holding time.")
+
+                    # Check for the first 3 transactions and count 'sell' transactions if MC < 45 SOL
+                    if market_cap < 45:
+                        transaction_count += 1
                         if tx_type == 'sell':
                             sell_count += 1
-                        transaction_count += 1
 
                         # Если 2 из первых 3 транзакций являются 'sell', продаём токен
                         if transaction_count <= 3 and sell_count >= 2:
@@ -232,10 +248,10 @@ async def handle_token_creation(websocket):
                     break
 
             if not strategy_done:
-                print(f"Держим токен {mint} 20 секунд. Продаем по истечении времени.")
                 trade_token("sell", {"mint": mint})
+                print(f"Продержали токен {mint}. Продаем его.")
 
-            # Открываем файл с указанием кодировки UTF-8
+            # Write transaction log to file
             with open(filename, "a", encoding="utf-8") as file:
                 file.write(f"{mint}\n")
                 file.write(f"Транзакции токена:\n")

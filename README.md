@@ -38,3 +38,27 @@
 процессы по уже полученным токенам, которые находятся в обработке
 - **Логика торговли**. Нужно добавить "выключатель", который будет срабатывать в случаях если баланс будут опускаться
 до определенного значения либо если н-ое количество транзакций подряд будут убыточными
+
+Copy Wallet Public Key non Jito
+CFQAmZY57pb2vZPTHV9F3NGhahmqLhesHLJjxgh3c6BV
+
+
+Copy Wallet Private Key
+3vGy8c8cmoKt1Kkkb2HCEFd54vzfCo3P5Yc7p4KRReQvtgjuTbX5YafeWBK58FjTMH1xM5srP45n5GavdsL4oxBm
+
+
+Copy API Key
+6rr5abvq74w6uharan15awvdathqcnkpexd6pxb8f913ckab99m6gwvt8xm5et2865kkanhf5d6kctk28gqq8ujne5666kaea145gtapan950vktecwp2ttkcrqmrdb4an35mttb84yku7175gnkaehtnjh26a12qgwjrcr9gv66jvn6gtp2cbm5xb4jgjfcx44jjtfe90kuf8
+
+
+
+Copy Wallet Public Key Jito
+TsqrQ3MpPBdxSBgc8thgs4hwb8njBFGQBRGDvzFLjSV
+
+
+Copy Wallet Private Key
+LWWi7sasVKWgiacdhoXhw8NHja6gN9v2S94TzLQhgEGPRpQX8EWKpjGE51LcGJYr9fJcU3fQoFB2t9nP5P9b75P
+
+
+Copy API Key
+chcqcwvmf93p6c9j85jpgvv5cxgkeya5acr2phvr89aqamahd1j5char9dumuyjken5mrm3red2mwuhtcmwk8kb3axc30t1femvnmvu46t342hafddm6anv7f1238kjb71a6wctgewyku851mwja295nnctj6b16n8yj9dwb8r4cbumatd72y1r692m4rbb6wvmuhanc9kkuf8
