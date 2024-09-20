@@ -4,24 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="76ad7c09-a3a3-46c5-844a-1519daf9ad46" name="Changes" comment="проверка токенов на нисходящий тренд и отслеживаний позиций в комментах">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="76ad7c09-a3a3-46c5-844a-1519daf9ad46" name="Changes" comment="Удалил файлы чтобы почистить память. Добавил обработку кейсов с картинками и калькулятор времени обработки для токенов">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MainTest/TS20-20240912T164048Z.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MainTest/TS20-20240912T171343Z.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/10SecondsOneFile/TS10-20240904T223746Z.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/10SecondsOneFile/TS10-20240906T105700Z.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/10SecondsOneFile/TS10-20240906T111640Z.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/20SecondsOneFile/TS20-20240904T223745Z.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/20SecondsOneFile/TS20-20240906T105659Z.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/20SecondsOneFile/TS20-20240906T111642Z.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/30SecondsOneFile/TS30-20240904T223744Z.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/30SecondsOneFile/TS30-20240906T105658Z.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/30SecondsOneFile/TS30-20240906T111644Z.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/60SecondsOneFile/TS60-20240904T223743Z.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/60SecondsOneFile/TS60-20240906T105656Z.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TestsDiffTime/TestRunsResults/60SecondsOneFile/TS60-20240906T111646Z.log" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -51,12 +35,12 @@
     &quot;assignee&quot;: &quot;BonGeras&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/BonGeras/PumpfunBot",
-    "accountId": "c0efde6b-4305-41c7-98f4-8ecdaf165d9c"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/BonGeras/PumpfunBot&quot;,
+    &quot;accountId&quot;: &quot;c0efde6b-4305-41c7-98f4-8ecdaf165d9c&quot;
   }
-}]]></component>
+}</component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
@@ -157,6 +141,8 @@
       <workItem from="1725993003224" duration="207000" />
       <workItem from="1725994543623" duration="54416000" />
       <workItem from="1726318728064" duration="12571000" />
+      <workItem from="1726440406021" duration="20715000" />
+      <workItem from="1726854367565" duration="1543000" />
     </task>
     <task id="LOCAL-00001" summary="Initial stage">
       <option name="closed" value="true" />
@@ -374,7 +360,15 @@
       <option name="project" value="LOCAL" />
       <updated>1726237473899</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="Удалил файлы чтобы почистить память. Добавил обработку кейсов с картинками и калькулятор времени обработки для токенов">
+      <option name="closed" value="true" />
+      <created>1726440720842</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1726440720842</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -404,7 +398,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Initial stage" />
     <MESSAGE value="Добавил механизм покупки и подключил тестовый кошелек" />
     <MESSAGE value="Работа над проверкой PnL при каждом трейде" />
     <MESSAGE value="Развитие тестов с отслеживанием выручки и записью данных" />
@@ -429,7 +422,8 @@
     <MESSAGE value="улучшение в фильтрации токенов и предупреждении начала продаж" />
     <MESSAGE value="Корнер кейс для случаев если мы получаем неправильный json" />
     <MESSAGE value="проверка токенов на нисходящий тренд и отслеживаний позиций в комментах" />
-    <option name="LAST_COMMIT_MESSAGE" value="проверка токенов на нисходящий тренд и отслеживаний позиций в комментах" />
+    <MESSAGE value="Удалил файлы чтобы почистить память. Добавил обработку кейсов с картинками и калькулятор времени обработки для токенов" />
+    <option name="LAST_COMMIT_MESSAGE" value="Удалил файлы чтобы почистить память. Добавил обработку кейсов с картинками и калькулятор времени обработки для токенов" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/PumpfunBot$TokenSubscriber.coverage" NAME="TokenSubscriber Coverage Results" MODIFIED="1726158301299" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
