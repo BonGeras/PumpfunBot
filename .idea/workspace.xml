@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="76ad7c09-a3a3-46c5-844a-1519daf9ad46" name="Changes" comment="Удалил файлы чтобы почистить память. Добавил обработку кейсов с картинками и калькулятор времени обработки для токенов">
+    <list default="true" id="76ad7c09-a3a3-46c5-844a-1519daf9ad46" name="Changes" comment="Moar trashhold">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
@@ -142,7 +142,8 @@
       <workItem from="1725994543623" duration="54416000" />
       <workItem from="1726318728064" duration="12571000" />
       <workItem from="1726440406021" duration="20715000" />
-      <workItem from="1726854367565" duration="1543000" />
+      <workItem from="1726854367565" duration="1901000" />
+      <workItem from="1726863440297" duration="7726000" />
     </task>
     <task id="LOCAL-00001" summary="Initial stage">
       <option name="closed" value="true" />
@@ -368,7 +369,15 @@
       <option name="project" value="LOCAL" />
       <updated>1726440720842</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="Moar trashhold">
+      <option name="closed" value="true" />
+      <created>1726856189101</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1726856189101</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -398,7 +407,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Добавил механизм покупки и подключил тестовый кошелек" />
     <MESSAGE value="Работа над проверкой PnL при каждом трейде" />
     <MESSAGE value="Развитие тестов с отслеживанием выручки и записью данных" />
     <MESSAGE value="1 час тестов, 10 секунд без доп условий, Х2. Работа над сбором статистики" />
@@ -423,7 +431,8 @@
     <MESSAGE value="Корнер кейс для случаев если мы получаем неправильный json" />
     <MESSAGE value="проверка токенов на нисходящий тренд и отслеживаний позиций в комментах" />
     <MESSAGE value="Удалил файлы чтобы почистить память. Добавил обработку кейсов с картинками и калькулятор времени обработки для токенов" />
-    <option name="LAST_COMMIT_MESSAGE" value="Удалил файлы чтобы почистить память. Добавил обработку кейсов с картинками и калькулятор времени обработки для токенов" />
+    <MESSAGE value="Moar trashhold" />
+    <option name="LAST_COMMIT_MESSAGE" value="Moar trashhold" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/PumpfunBot$TokenSubscriber.coverage" NAME="TokenSubscriber Coverage Results" MODIFIED="1726158301299" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

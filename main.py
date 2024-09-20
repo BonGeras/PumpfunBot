@@ -25,14 +25,14 @@ def check_links(twitter, telegram, website):
 
     # Проверка на подозрительные сайты
     invalid_substrings = [
-        "canva", ".site", ".my",
-        ".online", "ERC20",
-        "erc20", ".framer", ".framer.website",
-        ".website", ".icu", ".top", "666",
-        ".club", ".org", "TRX", "trx", "illuminati",
-        ".finance", ".lol", ".cc", "/home", ".lat", ".vip",
-        ".tel", ".mirror", ".bond", ".drr.ac", ".ac", ".app",
-        ".webnode", ".se", ".io"
+        "canva", ".site", ".my", ".pump-sol", ".ju.mp", ".straw", ".page",
+        ".online", "ERC20", "ERC", "erc", ".world", "AI", ".community",
+        "erc20", ".framer", ".framer.website", ".today", ".biz",
+        ".website", ".icu", ".top", "666", ".net", ".sbs", ".life",
+        ".club", ".org", "TRX", "trx", "illuminati", ".meme/", ".mp",
+        ".finance", ".lol", ".cc", "/home", ".lat", ".vip", ".co", "CTO", "_cto", "cto_",
+        ".tel", ".mirror", ".bond", ".drr.ac", ".ac", ".app", ".live", ".buzz",
+        ".webnode", ".se", ".io", ".cfd", ".click", ".fpump", ".cyou", ".space/"
     ]
 
     # Проверяем ссылки на подозрительные сайты и правильный формат
@@ -177,7 +177,7 @@ async def handle_token_creation(websocket):
             last_transaction_time = time.time()  # Time of the last transaction
 
             # New threshold flags
-            crossed_45 = False
+            crossed_42 = False
             crossed_50 = False
             crossed_60 = False
             crossed_75 = False
@@ -214,7 +214,7 @@ async def handle_token_creation(websocket):
                         max_market_cap = market_cap
 
                     # Check for stop-loss condition (20% below max market cap)
-                    if market_cap <= max_market_cap * 0.8:
+                    if market_cap <= max_market_cap * 0.85:
                         trade_token("sell", {"mint": mint})
                         strategy_done = True
                         print(f"Рыночная капитализация токена {mint} упала на 20% от максимума. Продажа токена.")
@@ -228,9 +228,9 @@ async def handle_token_creation(websocket):
                         break
 
                     # Apply new thresholds
-                    if not crossed_45 and market_cap >= 45:
+                    if not crossed_42 and market_cap >= 42:
                         end_time += 3  # Add 3 seconds to holding time
-                        crossed_45 = True
+                        crossed_42 = True
                         print(f"Market cap crossed 45 SOL for token {mint}. Added 3 seconds to holding time.")
 
                     if not crossed_50 and market_cap >= 50:
