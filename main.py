@@ -4,24 +4,23 @@ import websockets
 import json
 import time
 import aiohttp
-from datetime import datetime, timezone
+from datetime import datetime
 import requests
 import re
 
-API_KEY = "60uprxa26h5kee3f61x2yp1jd5d6pxa98nbqemk8axt6yp9pchv50tuba9r4atv7d9hmujur69m5amv26rt52k35c9n4ctvm85x3gx2jf517gjvncmtq8jvm5ct6umut99a6rpb6cwyku8dwpwra59rt6cy9b6dn5acuadr9mt6cdjc9t77gc3fb9rkcn1h85w5cjk86hvkuf8"
+API_KEY = "88w5jd2pdtbp4eb4admkephf5d9mrkaqehvnejj99xv7gy3mctc2yp1p99b3ehae8nu56vk16np6crvfcd2q8v2k6n8qjhkjdrwnmy2f5drmegkq8xgpmg9f99j30vupb9u6unk1cwykuf144rma6erw4ygag8ww5mjaja8adv3gj1qd5kk4kbccnd6ep1f8h2n0gtff1vkuf8"
 
 def gen_log_filename():
-    dt = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     base_dir = os.path.dirname(os.path.abspath(__file__))
     directory = os.path.join(base_dir, "MainTest")
     if not os.path.exists(directory):
         os.makedirs(directory)
-    return os.path.join(directory, f"MainTestRun-20.log")
+    return os.path.join(directory, f"MainTestRun-21.log")
 
 def check_links(twitter, telegram, website):
     twitter_pattern = re.compile(r"^https://x\.com/\w+$")
     telegram_pattern = re.compile(r"^https://t\.me/\w+$")
-    website_pattern = re.compile(r"^https://[\w\-\.]+\.[a-z]{2,}/?$")
+    website_pattern = re.compile(r"^https://[\w\-.]+\.[a-z]{2,}/?$")
 
     # Проверка на подозрительные сайты
     invalid_substrings = [
@@ -77,7 +76,7 @@ def trade_token(action, data):
             "amount": "100%",
             "denominatedInSol": "false",
             "slippage": 20,
-            "priorityFee": 0.001,
+            "priorityFee": 0.002,
         }
 
     response = requests.post(url, data=payload)
@@ -116,7 +115,7 @@ async def fetch_token_metadata(uri):
 async def should_process_token(token_uri, mint):
     if token_uri:
         # Check if token_uri is a valid URL
-        if not token_uri.startswith(('http://', 'https://')):
+        if not token_uri.startswith('https://'):
             print(f"Invalid token URI: {token_uri}. Skipping token {mint}.")
             return False, None
         metadata = await fetch_token_metadata(token_uri)
@@ -173,19 +172,21 @@ async def handle_token_creation(websocket):
             transaction_count = 0  # Counter for all transactions
 
             # Variables for thresholds
+            initial_market_cap = None
             max_market_cap = 0  # To track the maximum market cap
             last_transaction_time = time.time()  # Time of the last transaction
+            previous_market_cap = 0  # To track previous market cap for comparison
 
             # New threshold flags
-            crossed_42 = False
             crossed_50 = False
             crossed_60 = False
-            crossed_75 = False
+            crossed_70 = False
+            crossed_80 = False
             crossed_100 = False
 
             while time.time() < end_time:
                 try:
-                    trade_message = await asyncio.wait_for(websocket.recv(), timeout=5)
+                    trade_message = await asyncio.wait_for(websocket.recv(), timeout=100)
                     trade_data = json.loads(trade_message)
                     last_transaction_time = time.time()  # Update last transaction time when receiving a trade
                     print(f"Трейд по токену: {trade_data}")
@@ -209,30 +210,48 @@ async def handle_token_creation(websocket):
                     except ValueError:
                         market_cap = 0  # If unable to convert, set market_cap to 0
 
+                    # Проверка увеличения MC на более чем 40 Sol с предыдущего значения
+                    if previous_market_cap > 0 and market_cap - previous_market_cap > 40:
+                        trade_token("sell", {
+                            "mint": mint,
+                            "priorityFee": 0.0095
+                        })
+                        strategy_done = True
+                        print(f"Рыночная капитализация токена {mint} увеличилась более чем на 40 SOL. Продажа токена с priorityFee 0.0095.")
+                        break
+
+                    # Track previous market cap for next comparison
+                    previous_market_cap = market_cap
+
                     # Track maximum market cap for stop-loss mechanism
+                    if initial_market_cap is None or market_cap < initial_market_cap:
+                        initial_market_cap = market_cap
+
                     if market_cap > max_market_cap:
                         max_market_cap = market_cap
 
                     # Check for stop-loss condition (20% below max market cap)
-                    if market_cap <= max_market_cap * 0.85:
+                    if market_cap <= max_market_cap * 0.80:
                         trade_token("sell", {"mint": mint})
                         strategy_done = True
                         print(f"Рыночная капитализация токена {mint} упала на 20% от максимума. Продажа токена.")
                         break
 
-                    # Продажа, если MC больше 190 Sol
-                    if market_cap >= 190:
+                    # Продажа, если MC больше 180 Sol
+                    if market_cap >= 180:
                         trade_token("sell", {"mint": mint})
                         strategy_done = True
-                        print(f"Рыночная капитализация токена {mint} превышает 190 SOL. Продажа токена.")
+                        print(f"Рыночная капитализация токена {mint} превышает 180 SOL. Продажа токена.")
+                        break
+
+                    # Продажа, если MC больше 100 Sol на первом сообщении
+                    if initial_market_cap >= 100:
+                        trade_token("sell", {"mint": mint})
+                        strategy_done = True
+                        print(f"Рыночная капитализация токена {mint} превышает 100 SOL на первом же сообщении. Продажа токена.")
                         break
 
                     # Apply new thresholds
-                    if not crossed_42 and market_cap >= 42:
-                        end_time += 3  # Add 3 seconds to holding time
-                        crossed_42 = True
-                        print(f"Market cap crossed 45 SOL for token {mint}. Added 3 seconds to holding time.")
-
                     if not crossed_50 and market_cap >= 50:
                         end_time += 2.5  # Add 2.5 seconds to holding time
                         crossed_50 = True
@@ -243,10 +262,15 @@ async def handle_token_creation(websocket):
                         crossed_60 = True
                         print(f"Market cap crossed 60 SOL for token {mint}. Added 2.5 seconds to holding time.")
 
-                    if not crossed_75 and market_cap >= 75:
+                    if not crossed_70 and market_cap >= 70:
                         end_time += 2.5  # Add 2.5 seconds to holding time
-                        crossed_75 = True
+                        crossed_70 = True
                         print(f"Market cap crossed 75 SOL for token {mint}. Added 2.5 seconds to holding time.")
+
+                    if not crossed_80 and market_cap >= 80:
+                        end_time += 3  # Add 3 seconds to holding time
+                        crossed_80 = True
+                        print(f"Market cap crossed 80 SOL for token {mint}. Added 3 seconds to holding time.")
 
                     if not crossed_100 and market_cap >= 100:
                         end_time += 2.5  # Add 2.5 seconds to holding time
@@ -269,7 +293,10 @@ async def handle_token_creation(websocket):
 
                     # Продажа, если Dev продаёт токен
                     if subscription_confirmed and not strategy_done and tx_type == 'sell' and trade_data.get('traderPublicKey') == traderPublicKey:
-                        trade_token("sell", {"mint": mint})
+                        trade_token("sell", {
+                            "mint": mint,
+                            "priorityFee": 0.0095
+                        })
                         strategy_done = True
                         print(f"Обнаружена продажа от Dev для токена {mint}. Продажа токена.")
                         break

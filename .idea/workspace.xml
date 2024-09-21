@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="76ad7c09-a3a3-46c5-844a-1519daf9ad46" name="Changes" comment="Moar trashhold">
+    <list default="true" id="76ad7c09-a3a3-46c5-844a-1519daf9ad46" name="Changes" comment="More fake links">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -143,7 +144,7 @@
       <workItem from="1726318728064" duration="12571000" />
       <workItem from="1726440406021" duration="20715000" />
       <workItem from="1726854367565" duration="1901000" />
-      <workItem from="1726863440297" duration="7726000" />
+      <workItem from="1726863440297" duration="19501000" />
     </task>
     <task id="LOCAL-00001" summary="Initial stage">
       <option name="closed" value="true" />
@@ -377,7 +378,15 @@
       <option name="project" value="LOCAL" />
       <updated>1726856189101</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="More fake links">
+      <option name="closed" value="true" />
+      <created>1726874257881</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1726874257881</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -407,7 +416,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Работа над проверкой PnL при каждом трейде" />
     <MESSAGE value="Развитие тестов с отслеживанием выручки и записью данных" />
     <MESSAGE value="1 час тестов, 10 секунд без доп условий, Х2. Работа над сбором статистики" />
     <MESSAGE value="Статистика для 5 стратегий с их описанием и краткими выводами" />
@@ -432,7 +440,8 @@
     <MESSAGE value="проверка токенов на нисходящий тренд и отслеживаний позиций в комментах" />
     <MESSAGE value="Удалил файлы чтобы почистить память. Добавил обработку кейсов с картинками и калькулятор времени обработки для токенов" />
     <MESSAGE value="Moar trashhold" />
-    <option name="LAST_COMMIT_MESSAGE" value="Moar trashhold" />
+    <MESSAGE value="More fake links" />
+    <option name="LAST_COMMIT_MESSAGE" value="More fake links" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/PumpfunBot$TokenSubscriber.coverage" NAME="TokenSubscriber Coverage Results" MODIFIED="1726158301299" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
