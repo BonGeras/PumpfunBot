@@ -3,7 +3,7 @@ import websockets
 import json
 import requests
 
-API_KEY = "60uprxa26h5kee3f61x2yp1jd5d6pxa98nbqemk8axt6yp9pchv50tuba9r4atv7d9hmujur69m5amv26rt52k35c9n4ctvm85x3gx2jf517gjvncmtq8jvm5ct6umut99a6rpb6cwyku8dwpwra59rt6cy9b6dn5acuadr9mt6cdjc9t77gc3fb9rkcn1h85w5cjk86hvkuf8"
+API_KEY = "WALLET_API"
 
 
 def write_token_data(data, buy_price, sell_price):
